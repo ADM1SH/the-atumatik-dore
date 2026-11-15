@@ -1,42 +1,48 @@
 # Handoff
 
-Last update: 15/11/2026.
+Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 
 ## 1. Goals
 
 - Build "The Atumatik DoRe", a static voice-controlled automatic sliding door demo and hardware guide for GitHub Pages (`ADM1SH/the-atumatik-dore`).
 - Provide two pages (`index.html` and `guide.html`) in plain HTML, CSS, and ES modules with zero build step.
 - Support Mode A (offline coded commands), Mode B (browser-direct Groq API rules with user-supplied key), and a lazy-loaded `Xenova/wavlm-base-plus-sv` speaker lock with PDPA 2010 notice.
-- Complete Section 15 checks, Lighthouse audits, Argon review (Step 7), and GitHub Pages deployment.
+- Complete Section 15 checks, Lighthouse audits, Argon Step 7 review, and Step 10.6 GitHub Pages deployment.
 
 ## 2. Current state
 
-- Argon approved the execution plan on 15/11/2026 with two corrections. Mark `"Hydrogen can request a new Argon review in the middle of a task"` as NOT CONFIRMED. Mark default threshold `0.78` as PROVISIONAL until live calibration.
-- Writing `.gitignore` and the 14 STE documentation files before initializing Git and building application code.
-- Section 4 facts and 15/11/2026 MYR hardware prices from Cytron Malaysia and Mybotic Malaysia are verified.
+- Phases 1 to 7 are complete on branch `main`.
+- Unit tests (`15/15`), live `Xenova/wavlm-base-plus-sv` WASM model load, and Section 15 browser checks all passed.
+- Synthetic smoke test scored `0.8503` (same) vs `0.6800` (different), marked `"synthetic, not an accuracy result"`.
+- Lighthouse v13.6.0 scored `100` in Accessibility, Best Practices, SEO, and Agentic Browsing with cold Slow 4G `CLS 0.00`.
+- Default threshold `0.78` stays `PROVISIONAL` until Adam runs live microphone calibration against two human speakers.
+- Step 10.6 (enable GitHub Pages) awaits Argon Step 7 review first.
 
 ## 3. Active files
 
-- `.gitignore` (ignores `argon_*.md`, `.DS_Store`, `.env*`, `node_modules/`)
-- `GEMINI.md` (project rules and source-of-truth table)
-- `prd.md`, `implementation_plan.md`, `task_today.md`, `testing.md`, `bugs.md`, `audit.md`, `decisions.md`, `ARCHITECTURE.md`, `DESIGN_SYSTEM.md`, `SECURITY.md`, `CODE_STYLE.md`, `README.md` (STE documentation set)
-- `handoff.md` (this file)
+- `index.html`, `guide.html`, `404.html`, `robots.txt`, `sitemap.xml` (static pages and metadata)
+- `design/tokens.css`, `assets/styles.css`, `assets/favicon.svg`, `assets/og-share.png`, `assets/fonts/` (tokens, self-hosted fonts, icons)
+- `design/boards/*.png` (6 light, dark, and mobile verification screenshots)
+- `src/door-fsm.js`, `src/mode-a.js`, `src/mode-b.js`, `src/voiceprint.js`, `src/audio.js`, `src/app.js` (application ES modules)
+- `tests/door-fsm.test.js`, `tests/mode-a.test.js` (`node --test` unit tests)
+- `decisions.md`, `SECURITY.md`, `bugs.md`, `audit.md`, `testing.md`, `implementation_plan.md`, `task_today.md`, `handoff.md` (project records)
 
 ## 4. Changes made
 
-- Created `argon_setup_prompt.md` and `argon_door_demo_prompt.md` (kept untracked via `.gitignore`).
-- Verified Section 4 technical facts on 15/11/2026 (Groq/OpenRouter/Gemini CORS, Groq Free Plan limits, `Xenova/wavlm-base-plus-sv` quantized size `96.97 MB`, `@huggingface/transformers@4.3.2`).
-- Verified 15/11/2026 Malaysian hardware prices on Cytron Malaysia and Mybotic Malaysia.
-- Authored `.gitignore` and the 14 STE documentation files.
+- Implemented the door state machine, Mode A matcher, Groq Mode B integration, Web Audio 16 kHz capture, and lazy `Xenova/wavlm-base-plus-sv` speaker lock (`src/voiceprint.js` using `transformers.min.js`).
+- Added `index.html`, `guide.html` (verified `15/11/2026` Cytron MY and Mybotic MY prices), `404.html`, `robots.txt`, `sitemap.xml`, and `assets/styles.css`.
+- Fixed CSP (`blob:` in `script-src` on `index.html`, `connect-src 'self'` on `guide.html` and `404.html`), added font preloads, and set `font-display: optional`.
+- Verified `15/15` unit tests, synthetic smoke test, Section 15 checks, and Lighthouse `100` scores across all audited categories.
 
 ## 5. Failed attempts
 
-- Autobotic search endpoint returned HTTP 404 on 15/11/2026 (`autoboticedu.com` home had no store price). RS Components Malaysia returned HTTP 503. Used Mybotic Malaysia (`mybotic.com.my`) for live HTTP 200 MYR pricing instead.
+- Autobotic returned HTTP `404` and RS Components Malaysia returned HTTP `503` during price checks. Used Cytron Malaysia and Mybotic Malaysia (`200`) instead.
+- `@huggingface/transformers@4.3.2/dist/transformers.web.js` failed with bare specifier `"onnxruntime-web/webgpu"`. Switched to `transformers.min.js`.
+- Strict CSP blocked `blob:` WASM loading on `index.html` and `robots.txt` on `guide.html`. Updated CSP directives and re-verified zero errors.
 
 ## 6. Next steps
 
-1. Run Git steps 10.1 to 10.5 to initialize `main`, scan for secrets/paths/emails/em dashes, commit docs, create `ADM1SH/the-atumatik-dore`, and push docs.
-2. Self-host `Jost` and `IBM Plex Mono` WOFF2 fonts, create `design/tokens.css`, static assets, pure modules (`door-fsm.js`, `mode-a.js`, `mode-b.js`), and `node --test` tests.
-3. Implement `src/audio.js`, `src/voiceprint.js`, `src/app.js`, `index.html`, `guide.html`, `404.html`, `robots.txt`, and `sitemap.xml`.
-4. Run Section 15 checks, capture the 6 boards in `design/boards/`, verify CSP with live model load, run synthetic two-voice smoke test, and run Lighthouse.
-5. Hand off to Argon for Step 7 review before enabling GitHub Pages (Step 10.6).
+1. Run Step 7 Argon review on `SECURITY.md`, `decisions.md`, `audit.md`, `index.html`, `src/mode-b.js`, `src/voiceprint.js`, and `src/app.js`.
+2. After Argon approval, run Step 10.6 to enable GitHub Pages on `ADM1SH/the-atumatik-dore` (`main` `/`).
+3. Open `https://adm1sh.github.io/the-atumatik-dore/` and verify HTTPS load, assets, and CSP with zero console errors.
+4. Perform Adam's live two-speaker microphone calibration and physical Android Chrome/Edge check, then update `decisions.md` threshold from `PROVISIONAL`.

@@ -1,0 +1,82 @@
+/* Bauhaus + Dieter Rams Design Tokens */
+
+@font-face {
+  font-family: "Jost";
+  src: url("../assets/fonts/jost-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: optional;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("../assets/fonts/ibm-plex-mono-latin.woff2") format("woff2");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: optional;
+}
+
+:root {
+  --font-sans: "Jost", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --bg: #F4F3EF;
+  --surface: #FFFFFF;
+  --surface-alt: #EAE8E1;
+  --ink: #141414;
+  --ink-muted: #4A4A46;
+  --border: #141414;
+  --border-subtle: #C8C5BC;
+
+  --accent-primary: #1D4ED8;
+  --accent-primary-ink: #FFFFFF;
+  --accent-danger: #C81E1E;
+  --accent-danger-bg: #FEE2E2;
+  --accent-warn: #92400E;
+  --accent-warn-bg: #FEF3C7;
+  --accent-ok: #166534;
+  --accent-ok-bg: #DCFCE7;
+
+  --door-frame: #141414;
+  --door-panel: #D8D5CC;
+  --door-glass: #E6ECF5;
+  --door-interior: #222220;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius: 2px;
+  --border-w: 2px;
+  --touch-min: 44px;
+  --focus-ring: 3px solid #1D4ED8;
+}
+
+[data-theme="dark"] {
+  --bg: #101010;
+  --surface: #1A1A1A;
+  --surface-alt: #242424;
+  --ink: #F4F3EF;
+  --ink-muted: #B8B6AE;
+  --border: #52524C;
+  --border-subtle: #32322E;
+
+  --accent-primary: #60A5FA;
+  --accent-primary-ink: #0B1120;
+  --accent-danger: #F87171;
+  --accent-danger-bg: #3B1214;
+  --accent-warn: #FBBF24;
+  --accent-warn-bg: #362507;
+  --accent-ok: #4ADE80;
+  --accent-ok-bg: #0D331B;
+
+  --door-frame: #F4F3EF;
+  --door-panel: #2E2E2A;
+  --door-glass: #1E293B;
+  --door-interior: #070707;
+
+  --focus-ring: 3px solid #60A5FA;
+}

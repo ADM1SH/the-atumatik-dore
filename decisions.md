@@ -27,8 +27,8 @@ Last update: 15/11/2026.
 
 ### DEC-005: Client-Side Speaker Verification Model
 - Date: 15/11/2026
-- Choice: Use `Xenova/wavlm-base-plus-sv` (quantized ONNX, task `audio-xvector`) via `@huggingface/transformers@4.3.2` loaded lazily from jsDelivr.
-- Reason: Live Hugging Face file inspection on 15/11/2026 measured `onnx/model_quantized.onnx` at `96.97 MB` (`101,683,453` bytes, or `97.03 MB` with JSON configs). This stays below `150 MB`. Lazy loading preserves fast page load for Mode A.
+- Choice: Use `Xenova/wavlm-base-plus-sv` (quantized ONNX, task `audio-xvector`) via `@huggingface/transformers@4.3.2` loaded lazily from `https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2/dist/transformers.min.js`.
+- Reason: Live Hugging Face file inspection on 15/11/2026 measured `onnx/model_quantized.onnx` at `96.97 MB` (`101,683,453` bytes, or `97.03 MB` with JSON configs). This stays below `150 MB`. Using `transformers.min.js` (`587,917` bytes) bundles `onnxruntime-web` directly and avoids external bare specifier resolution errors found in `transformers.web.js`. Lazy loading preserves fast page load for Mode A.
 
 ### DEC-006: Voiceprint Enrolment Method and PROVISIONAL Threshold
 - Date: 15/11/2026
@@ -52,8 +52,15 @@ Last update: 15/11/2026.
 
 ## Synthetic Two-Voice Smoke Test Results
 
-Status: Pending Phase 7 execution.
-All recorded scores in Phase 7 will carry the label `"synthetic, not an accuracy result"` and will not determine the final default threshold.
+Status: Executed on 15/11/2026 at 14:01 Asia/Kuala_Lumpur in headless Chrome WASM (`Xenova/wavlm-base-plus-sv` quantized `q8`, `512` normalized dimensions).
+
+| Test Case | Cosine Similarity Score | Label |
+|---|---|---|
+| Synthetic voice 1 test clip against synthetic voice 1 mean (`5` clips) | `0.8503` | synthetic, not an accuracy result |
+| Synthetic voice 2 test clip against synthetic voice 1 mean (`5` clips) | `0.6800` | synthetic, not an accuracy result |
+
+- Default threshold note: Default `0.78` stays `PROVISIONAL`. Do not calibrate the final threshold from synthetic audio. Set the final threshold only after Adam tests live audio from two human speakers.
+- Browser state note: `deleteVoiceprint()` and `localStorage.clear()` removed all temporary smoke-test entries after the run.
 
 ## Open Questions
 

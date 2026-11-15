@@ -28,9 +28,11 @@ Last update: 15/11/2026.
 
 - GitHub Pages serves static files without custom HTTP security response headers.
 - Therefore, this project does NOT claim server-delivered `HSTS`, `X-Frame-Options`, or `X-Content-Type-Options` headers.
-- Instead, `index.html` and `guide.html` enforce a strict `<meta http-equiv="Content-Security-Policy">` tag.
-- `connect-src` and `script-src` permit only `'self'`, jsDelivr (`https://cdn.jsdelivr.net`), Hugging Face (`https://huggingface.co` and its CDN redirect hosts verified in Phase 7 network logs), and Groq (`https://api.groq.com`).
-- `script-src` allows `'wasm-unsafe-eval'` only on `index.html` if required by ONNX Runtime WebAssembly execution, verified in Phase 7.
+- Instead, `index.html`, `guide.html`, and `404.html` enforce `<meta http-equiv="Content-Security-Policy">` tags.
+- `index.html` sets `default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net blob: 'wasm-unsafe-eval'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://us.aws.cdn.hf.co https://api.groq.com; worker-src 'self' blob:;`.
+- `guide.html` and `404.html` set `default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self';`.
+- Live Chrome checks confirmed `'wasm-unsafe-eval'` and `blob:` in `script-src` enable ONNX Runtime WASM loading on `index.html`.
+- Setting `connect-src 'self'` on `guide.html` and `404.html` permits same-origin `robots.txt` checks without allowing external hosts.
 - `object-src 'none'` and `base-uri 'self'` block plugin and base-tag hijacking.
 
 ## 4. Supply-Chain Risk Disclosure

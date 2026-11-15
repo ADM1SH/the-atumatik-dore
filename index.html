@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Atumatik DoRe | Voice-Controlled Sliding Door Demo</title>
+  <meta name="description" content="Voice-controlled automatic sliding door demo with coded Mode A, Groq AI Mode B, client-side speaker lock, and event log.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net blob: 'wasm-unsafe-eval'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://us.aws.cdn.hf.co https://api.groq.com; worker-src 'self' blob:;">
+  <link rel="canonical" href="https://adm1sh.github.io/the-atumatik-dore/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="The Atumatik DoRe | Voice-Controlled Sliding Door Demo">
+  <meta property="og:description" content="Browser demo of a voice-controlled automatic sliding door with fixed rules, Groq AI rules, and a client-side voiceprint lock.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://adm1sh.github.io/the-atumatik-dore/">
+  <meta property="og:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Atumatik DoRe | Voice-Controlled Sliding Door Demo">
+  <meta name="twitter:description" content="Voice-controlled automatic sliding door demo with Mode A, Groq Mode B, and speaker lock.">
+  <meta name="twitter:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
+  <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="design/tokens.css">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand-link" href="index.html">
+        <img class="brand-mark" src="assets/favicon.svg" alt="" width="28" height="28">
+        <span>The Atumatik DoRe</span>
+      </a>
+      <div class="header-controls">
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-link" href="index.html" aria-current="page">Demo</a>
+          <a class="nav-link" href="guide.html">Hardware Guide</a>
+        </nav>
+        <button id="theme-toggle" type="button" aria-pressed="false">Dark mode</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="container">
+    <div class="page-title-block">
+      <h1>The Atumatik DoRe</h1>
+      <p class="subtitle">Voice-controlled automatic sliding door demo with coded rules, plain-English Groq AI rules, and a browser speaker lock.</p>
+    </div>
+
+    <div id="browser-banner" class="banner banner-danger" role="alert" hidden></div>
+
+    <div class="layout-grid">
+      <section class="panel" aria-labelledby="door-heading">
+        <div class="panel-header">
+          <h2 id="door-heading">1. Sliding Door Simulation</h2>
+          <span id="door-lock-badge" class="status-badge status-badge-ok">Unlocked</span>
+        </div>
+
+        <div id="door-stage" class="door-stage" data-state="CLOSED" aria-hidden="true">
+          <div class="door-interior-label">
+            <span>Entrance Clear</span>
+            <span>Simulated Sensor Active</span>
+          </div>
+          <div class="door-panel door-panel-left">
+            <div class="door-glass"></div>
+          </div>
+          <div class="door-panel door-panel-right">
+            <div class="door-glass"></div>
+          </div>
+          <div id="door-lock-bar" class="door-lock-bar" hidden>LOCKED</div>
+        </div>
+
+        <div class="status-row">
+          <div>
+            <strong>Door State:</strong>
+            <span id="door-state-text" class="mono" aria-live="polite">CLOSED</span>
+          </div>
+          <div id="door-feedback" class="mono muted" aria-live="polite">Ready.</div>
+        </div>
+
+        <h3>Manual Controls</h3>
+        <div class="button-grid">
+          <button type="button" data-door-action="open">Open</button>
+          <button type="button" data-door-action="close">Close</button>
+          <button type="button" data-door-action="hold">Hold open</button>
+          <button type="button" data-door-action="release">Release</button>
+          <button type="button" data-door-action="lock">Lock</button>
+          <button type="button" data-door-action="unlock">Unlock</button>
+          <button type="button" class="btn-danger" data-door-action="obstacle">Obstacle</button>
+        </div>
+        <p class="muted mt-3">Open doors close automatically after 5 seconds unless set to Hold open. Transitions take 2 seconds unless reduced motion is active.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="voice-control-heading">
+        <div class="panel-header">
+          <h2 id="voice-control-heading">2. Voice Control</h2>
+          <span class="mono muted">Push-to-Talk (en-US)</span>
+        </div>
+
+        <div class="field-group">
+          <button id="talk-btn" type="button" class="btn-primary btn-talk" aria-pressed="false">
+            Hold Button or Space Key to Speak
+          </button>
+          <p id="local-speech-status" class="muted mono mt-2">Checking speech recognition support...</p>
+        </div>
+
+        <div id="talk-status" class="banner" role="status" aria-live="polite" hidden></div>
+
+        <h3>Control Mode</h3>
+        <div class="radio-group" role="radiogroup" aria-label="Control Mode">
+          <label class="radio-label" for="mode-a-radio">
+            <input id="mode-a-radio" type="radio" name="control-mode" value="A" checked>
+            <span>Mode A: Coded Words (No AI)</span>
+          </label>
+          <label class="radio-label" for="mode-b-radio">
+            <input id="mode-b-radio" type="radio" name="control-mode" value="B">
+            <span>Mode B: Groq AI Rules</span>
+          </label>
+        </div>
+
+        <p class="muted">Mode A words: <span class="mono">open, open up, close, shut, hold, stay open, keep open, release, let go, resume, lock, unlock</span>. Mode A sends zero requests to Groq.</p>
+
+        <div id="mode-b-panel" hidden>
+          <div class="field-group">
+            <label for="mode-b-rules">Plain-English Rules</label>
+            <textarea id="mode-b-rules" rows="4"></textarea>
+            <div class="mt-2">
+              <button id="reset-rules-btn" type="button">Reset to example</button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="groq-key-input">Groq API Key (Saved in This Browser Only)</label>
+            <input id="groq-key-input" type="password" autocomplete="off" placeholder="Paste temporary Groq key">
+            <div class="button-grid mt-2">
+              <button id="save-key-btn" type="button" class="btn-primary">Save key</button>
+              <button id="forget-key-btn" type="button" class="btn-danger">Forget key</button>
+            </div>
+            <p id="groq-key-status" class="muted mono mt-2">No Groq key saved.</p>
+            <p class="muted">Create a temporary key only for this demo at <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer">console.groq.com/keys</a> and delete it afterward. Anyone using this browser profile can read saved browser keys.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel panel-spaced" aria-labelledby="voice-setup-heading">
+      <div class="panel-header">
+        <h2 id="voice-setup-heading">3. Voice Setup (Demo Speaker Lock)</h2>
+        <span class="mono muted">Xenova/wavlm-base-plus-sv (q8)</span>
+      </div>
+
+      <div class="checkbox-row">
+        <input id="pdpa-consent" type="checkbox">
+        <label for="pdpa-consent">
+          <strong>PDPA 2010 (Malaysia) Notice and Consent:</strong> Voice data is personal data. This page saves only a numeric voiceprint vector in this browser, never audio recordings. Click "Delete my voiceprint" anytime to erase it. Chrome sends microphone audio to Google servers for text recognition unless on-device recognition runs. In Mode B, recognized text (never audio) goes to Groq. Demo limit: a recording or a similar voice can pass. This lock is a demo, not physical security.
+        </label>
+      </div>
+
+      <div class="field-group">
+        <div class="button-grid">
+          <button id="load-model-btn" type="button" class="btn-primary">Load Voice Model (~97 MB)</button>
+          <button id="rerecord-btn" type="button">Record again</button>
+          <button id="delete-voiceprint-btn" type="button" class="btn-danger">Delete my voiceprint</button>
+        </div>
+      </div>
+
+      <div id="model-progress-wrap" class="field-group" hidden>
+        <progress id="model-progress-bar" max="100" value="0"></progress>
+        <p id="model-progress-text" class="mono muted mt-1">Waiting...</p>
+      </div>
+
+      <p id="voiceprint-status" class="mono muted" aria-live="polite">No voiceprint enrolled.</p>
+
+      <h3>Record 5 Sentences (Hold Each Button for at Least 1.0 Second)</h3>
+      <ul id="enrolment-list" class="sentence-list"></ul>
+    </section>
+
+    <section class="panel panel-spaced" aria-labelledby="log-heading">
+      <div class="panel-header">
+        <h2 id="log-heading">4. Event Log (In Memory Only)</h2>
+        <button id="clear-log-btn" type="button">Clear</button>
+      </div>
+
+      <div class="field-group">
+        <label for="threshold-slider">
+          Speaker Accept Threshold:
+          <span id="threshold-value-label" class="mono">0.78 (PROVISIONAL)</span>
+        </label>
+        <input id="threshold-slider" type="range" min="0.50" max="0.95" step="0.01" value="0.78">
+        <p class="muted">Threshold 0.78 is PROVISIONAL pending live calibration with two human voices.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Time (MYT)</th>
+              <th scope="col">Mode</th>
+              <th scope="col">Heard Text</th>
+              <th scope="col">Speaker</th>
+              <th scope="col">Action</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody id="event-log-body"></tbody>
+        </table>
+      </div>
+      <p id="event-log-empty" class="muted mt-3">No events logged in this session yet.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>The Atumatik DoRe (15/11/2026) | Bauhaus and Dieter Rams Study</span>
+      <div class="footer-links">
+        <a href="index.html">Demo</a>
+        <a href="guide.html">Hardware Guide</a>
+        <a href="https://github.com/ADM1SH/the-atumatik-dore" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

@@ -1,17 +1,17 @@
 # Task Today
 
-Last update: 15/11/2026.
+Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 
 ## Single Active Task
 
-Write the `.gitignore` and 14 STE documentation files, push the docs commit to GitHub, and build the verified application code.
+Run Argon Step 7 security review before Step 10.6 GitHub Pages deployment.
 
 ## Files Needed for This Task
 
-- `prd.md`
-- `implementation_plan.md`
-- `ARCHITECTURE.md`
-- `DESIGN_SYSTEM.md`
 - `SECURITY.md`
-- `CODE_STYLE.md`
 - `decisions.md`
+- `audit.md`
+- `index.html`
+- `src/mode-b.js`
+- `src/voiceprint.js`
+- `src/app.js`
