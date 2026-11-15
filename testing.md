@@ -1,6 +1,6 @@
 # Testing Checklist: The Atumatik DoRe
 
-Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 
 ## 1. Automated Unit Tests (`node --test`)
 
@@ -40,4 +40,4 @@ All 15 automated unit tests in `tests/door-fsm.test.js` and `tests/mode-a.test.j
 - [x] Repository scan reports zero em dashes, zero en dashes, zero secrets, zero local paths, and zero real emails.
 - [x] Lighthouse v13.6.0 audits score `100` in Accessibility, Best Practices, SEO, and Agentic Browsing on `index.html` and `guide.html` with model unloaded.
 - [ ] Live human calibration: Adam records his live voice and a friend's live voice to confirm final threshold above or below PROVISIONAL `0.78`.
-- [ ] Live URL `https://adm1sh.github.io/the-atumatik-dore/` loads cleanly after Argon Step 7 review and Step 10.6 Pages deployment.
+- [x] Live URL `https://adm1sh.github.io/the-atumatik-dore/` loads cleanly after Argon Step 7 review and Step 10.6 Pages deployment.

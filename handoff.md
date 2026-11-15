@@ -1,6 +1,6 @@
 # Handoff
 
-Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 
 ## 1. Goals
 
@@ -11,16 +11,15 @@ Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 
 ## 2. Current state
 
-- Phases 1 to 7 are complete on branch `main`.
-- Unit tests (`15/15`), live `Xenova/wavlm-base-plus-sv` WASM model load, and Section 15 browser checks all passed.
-- Synthetic smoke test scored `0.8503` (same) vs `0.6800` (different), marked `"synthetic, not an accuracy result"`.
-- Lighthouse v13.6.0 scored `100` in Accessibility, Best Practices, SEO, and Agentic Browsing with cold Slow 4G `CLS 0.00`.
-- Default threshold `0.78` stays `PROVISIONAL` until Adam runs live microphone calibration against two human speakers.
-- Step 10.6 (enable GitHub Pages) awaits Argon Step 7 review first.
+- Phases 1 to 9 are complete on branch `main`.
+- Argon approved Step 7 security review before Step 10.6 ran.
+- GitHub Pages is active with `https_enforced: true` at `https://adm1sh.github.io/the-atumatik-dore/`.
+- Live HTTPS URLs (`index.html`, `guide.html`, `robots.txt`) return HTTP `200` with zero console errors in Chrome.
+- Default threshold `0.78` remains `PROVISIONAL` until Adam tests live audio from two human speakers.
 
 ## 3. Active files
 
-- `index.html`, `guide.html`, `404.html`, `robots.txt`, `sitemap.xml` (static pages and metadata)
+- `index.html`, `guide.html`, `404.html`, `robots.txt`, `sitemap.xml` (live GitHub Pages site)
 - `design/tokens.css`, `assets/styles.css`, `assets/favicon.svg`, `assets/og-share.png`, `assets/fonts/` (tokens, self-hosted fonts, icons)
 - `design/boards/*.png` (6 light, dark, and mobile verification screenshots)
 - `src/door-fsm.js`, `src/mode-a.js`, `src/mode-b.js`, `src/voiceprint.js`, `src/audio.js`, `src/app.js` (application ES modules)
@@ -29,10 +28,9 @@ Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 
 ## 4. Changes made
 
-- Implemented the door state machine, Mode A matcher, Groq Mode B integration, Web Audio 16 kHz capture, and lazy `Xenova/wavlm-base-plus-sv` speaker lock (`src/voiceprint.js` using `transformers.min.js`).
-- Added `index.html`, `guide.html` (verified `15/11/2026` Cytron MY and Mybotic MY prices), `404.html`, `robots.txt`, `sitemap.xml`, and `assets/styles.css`.
-- Fixed CSP (`blob:` in `script-src` on `index.html`, `connect-src 'self'` on `guide.html` and `404.html`), added font preloads, and set `font-display: optional`.
-- Verified `15/15` unit tests, synthetic smoke test, Section 15 checks, and Lighthouse `100` scores across all audited categories.
+- Enabled GitHub Pages on `ADM1SH/the-atumatik-dore` (`main` `/`) via Step 10.6 after Argon Step 7 approval.
+- Verified live HTTPS load, assets (`200`), and zero CSP errors across `https://adm1sh.github.io/the-atumatik-dore/` and `guide.html`.
+- Completed documentation updates in `implementation_plan.md`, `testing.md`, `audit.md`, `task_today.md`, and `handoff.md`.
 
 ## 5. Failed attempts
 
@@ -42,7 +40,7 @@ Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 
 ## 6. Next steps
 
-1. Run Step 7 Argon review on `SECURITY.md`, `decisions.md`, `audit.md`, `index.html`, `src/mode-b.js`, `src/voiceprint.js`, and `src/app.js`.
-2. After Argon approval, run Step 10.6 to enable GitHub Pages on `ADM1SH/the-atumatik-dore` (`main` `/`).
-3. Open `https://adm1sh.github.io/the-atumatik-dore/` and verify HTTPS load, assets, and CSP with zero console errors.
-4. Perform Adam's live two-speaker microphone calibration and physical Android Chrome/Edge check, then update `decisions.md` threshold from `PROVISIONAL`.
+1. Open `https://adm1sh.github.io/the-atumatik-dore/` in Chrome or Edge on desktop and Android.
+2. Enrol Adam's voice across all five sentences and test live scores against a second speaker.
+3. Record live scores in `decisions.md` and update `DEFAULT_THRESHOLD` in `src/voiceprint.js` if needed.
+4. Optionally test Mode B in the browser with a temporary Groq key from console.groq.com.

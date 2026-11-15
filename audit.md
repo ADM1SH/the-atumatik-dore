@@ -1,6 +1,6 @@
 # Launch and Performance Audit
 
-Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 
 ## 1. Website Performance Metrics (Model Unloaded)
 
@@ -90,7 +90,7 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | 16. Restrict uploads | N/A | No file upload mechanism exists. |
 | 17. Trim API responses | Done | Extracts only validated `action` and max `80`-char `reason` from Groq output. |
 | 18. Security headers | Done | `<meta http-equiv="Content-Security-Policy">` verified with zero CSP errors. GitHub Pages limits documented in `SECURITY.md`. |
-| 19. Force HTTPS | Pending | GitHub Pages serves HTTPS once Step 10.6 runs after Argon review. |
+| 19. Force HTTPS | Done | Verified `https_enforced: true` on `https://adm1sh.github.io/the-atumatik-dore/` after Step 10.6 Pages setup. |
 | 20. Scan dependencies | Done | Zero `package.json` runtime dependencies. Pinned `@huggingface/transformers@4.3.2` shows zero npm deprecation. |
 
 ## 5. Site Polish Checklist (20 Items)
@@ -98,7 +98,7 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | Item | Status | Notes |
 |---|---|---|
 | 1. Remove horizontal scroll | Done | Verified `scrollWidth === 375` at `375x812` on `index.html`, `guide.html`, and `404.html`. |
-| 2. Find broken links | Done | Verified all internal routes and all `11` external HTTPS links return HTTP `200` (live GitHub Pages URLs pending Step 10.6). |
+| 2. Find broken links | Done | Verified HTTP `200` on live GitHub Pages root, `guide.html`, `robots.txt`, and all `11` external links. |
 | 3. Add mobile menu | Done | Header navigation buttons wrap cleanly with `44x44` px touch targets on `375 px`. |
 | 4. Add favicon | Done | Included `assets/favicon.svg` (`414` bytes). |
 | 5. Fix page titles | Done | Unique `<title>` on `index.html`, `guide.html`, and `404.html`. |

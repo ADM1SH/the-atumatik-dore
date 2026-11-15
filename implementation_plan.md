@@ -1,6 +1,6 @@
 # Implementation Plan: The Atumatik DoRe
 
-Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 
 | Phase | Owner | Status | Scope |
 |---|---|---|---|
@@ -11,8 +11,8 @@ Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 | Phase 5 | Hydrogen | [x] Complete | Pure modules (`door-fsm.js`, `mode-a.js`, `mode-b.js`) and `node --test` suite |
 | Phase 6 | Hydrogen | [x] Complete | Interactive UI, audio capture, lazy voiceprint model, Groq integration, hardware guide |
 | Phase 7 | Hydrogen | [x] Complete | Section 15 QA checks, CSP model load test, synthetic voice smoke test, Lighthouse |
-| Phase 8 | Argon (Orchestrator) | [ ] Pending | Step 7 security, consent, CSP, rate-limit, and voiceprint review |
-| Phase 9 | Hydrogen + Argon | [ ] Pending | Enable GitHub Pages (step 10.6), live URL verification, final audit and handoff |
+| Phase 8 | Argon (Orchestrator) | [x] Complete | Step 7 security, consent, CSP, rate-limit, and voiceprint review |
+| Phase 9 | Hydrogen + Argon | [x] Complete | Enable GitHub Pages (step 10.6), live URL verification, final audit and handoff |
 
 ## Checklist
 
@@ -24,5 +24,5 @@ Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
 - [x] Build `src/door-fsm.js`, `src/mode-a.js`, `src/mode-b.js`, and verify `node --test` (`15/15` pass).
 - [x] Build `src/audio.js`, `src/voiceprint.js`, `src/app.js`, `index.html`, `guide.html`, `404.html`, `robots.txt`, and `sitemap.xml`.
 - [x] Run Section 15 checks, Lighthouse audits, CSP model load, and synthetic two-voice smoke test.
-- [ ] Hand back to Argon for Step 7 security review before enabling GitHub Pages.
-- [ ] Enable GitHub Pages (step 10.6) and run live URL checks.
+- [x] Complete Argon Step 7 security review before enabling GitHub Pages (`08cb561`).
+- [x] Enable GitHub Pages (step 10.6) and verify live HTTPS URLs.

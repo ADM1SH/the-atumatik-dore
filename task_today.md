@@ -1,17 +1,14 @@
 # Task Today
 
-Last update: 15/11/2026 (14:08 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 
 ## Single Active Task
 
-Run Argon Step 7 security review before Step 10.6 GitHub Pages deployment.
+Run live microphone enrolment with two human speakers on GitHub Pages to finalize the PROVISIONAL `0.78` speaker threshold.
 
 ## Files Needed for This Task
 
-- `SECURITY.md`
 - `decisions.md`
-- `audit.md`
-- `index.html`
-- `src/mode-b.js`
+- `testing.md`
 - `src/voiceprint.js`
-- `src/app.js`
+- `index.html`
