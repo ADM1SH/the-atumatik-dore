@@ -1,0 +1,6 @@
+argon_*.md
+.DS_Store
+.env
+.env.*
+.dev.vars
+node_modules/
