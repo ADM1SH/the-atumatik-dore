@@ -1,6 +1,6 @@
 # Handoff
 
-Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (19:57 Asia/Kuala_Lumpur).
 
 ## 1. Goals
 
@@ -31,6 +31,8 @@ Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 - Enabled GitHub Pages on `ADM1SH/the-atumatik-dore` (`main` `/`) via Step 10.6 after Argon Step 7 approval.
 - Verified live HTTPS load, assets (`200`), and zero CSP errors across `https://adm1sh.github.io/the-atumatik-dore/` and `guide.html`.
 - Completed documentation updates in `implementation_plan.md`, `testing.md`, `audit.md`, `task_today.md`, and `handoff.md`.
+- Fixed `BUG-004` in `src/audio.js` and `src/app.js` so push-to-talk waits up to `1800` ms after release for final speech results.
+- Added a `1550` ms push-to-talk regression test in `tests/mode-a.test.js` (`16/16` unit tests pass).
 
 ## 5. Failed attempts
 

@@ -458,6 +458,19 @@ function initDemoPage() {
     refreshVoiceprintUI();
   });
 
+  function formatSpeechFailure(speechError) {
+    if (speechError === "not-allowed" || speechError === "service-not-allowed") {
+      return "Speech permission denied.";
+    }
+    if (speechError === "network") {
+      return "Speech recognition network error. Check internet or try Chrome.";
+    }
+    if (speechError === "audio-capture") {
+      return "Speech recognition could not read the microphone.";
+    }
+    return "Not understood (no speech recognized).";
+  }
+
   function handleMicError(err) {
     if (err && err.message === "MIC_DENIED") {
       talkStatus.textContent =
@@ -573,9 +586,7 @@ function initDemoPage() {
     // Step 3: Route recognized transcript to active mode
     const transcript = captured.transcript;
     if (!transcript) {
-      const noTextMsg = captured.speechError === "not-allowed"
-        ? "Speech permission denied."
-        : "Not understood (no speech recognized).";
+      const noTextMsg = formatSpeechFailure(captured.speechError);
       talkStatus.textContent = noTextMsg;
       talkStatus.className = "banner banner-warn";
       addLogEntry({

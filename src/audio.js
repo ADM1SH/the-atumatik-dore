@@ -115,7 +115,13 @@ export async function decodeBlobToMono16k(blob) {
   }
 }
 
-export function createPushToTalkSession() {
+export function createPushToTalkSession(deps = {}) {
+  const getSpeechCtor = deps.getSpeechCtor || getSpeechRecognitionCtor;
+  const mediaDevices = deps.mediaDevices ?? (typeof navigator !== "undefined" ? navigator.mediaDevices : null);
+  const MediaRecorderCtor = deps.MediaRecorderCtor ?? (typeof MediaRecorder !== "undefined" ? MediaRecorder : null);
+  const decodeBlob = deps.decodeBlob || decodeBlobToMono16k;
+  const postStopWaitMs = typeof deps.postStopWaitMs === "number" ? deps.postStopWaitMs : 1800;
+
   let activeStream = null;
   let mediaRecorder = null;
   let chunks = [];
@@ -123,48 +129,26 @@ export function createPushToTalkSession() {
   let startTime = 0;
   let finalTranscript = "";
   let interimTranscript = "";
+  let lastTranscript = "";
   let speechError = null;
   let speechEndedPromise = Promise.resolve();
   let stopped = false;
 
   async function start({ recognizeSpeech = true, onInterim = () => {} } = {}) {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    if (!mediaDevices || typeof mediaDevices.getUserMedia !== "function") {
       throw new Error("MIC_UNAVAILABLE");
-    }
-
-    try {
-      activeStream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          channelCount: 1,
-          sampleRate: TARGET_SAMPLE_RATE,
-          echoCancellation: true,
-          noiseSuppression: true
-        }
-      });
-    } catch (err) {
-      if (err && (err.name === "NotAllowedError" || err.name === "PermissionDeniedError")) {
-        throw new Error("MIC_DENIED");
-      }
-      throw new Error("MIC_FAILED");
     }
 
     chunks = [];
     finalTranscript = "";
     interimTranscript = "";
+    lastTranscript = "";
     speechError = null;
     stopped = false;
-    startTime = performance.now();
-
-    mediaRecorder = new MediaRecorder(activeStream);
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data && event.data.size > 0) {
-        chunks.push(event.data);
-      }
-    };
-    mediaRecorder.start(100);
+    startTime = 0;
 
     if (recognizeSpeech) {
-      const SpeechCtor = getSpeechRecognitionCtor();
+      const SpeechCtor = getSpeechCtor();
       if (SpeechCtor) {
         recognition = new SpeechCtor();
         recognition.lang = "en-US";
@@ -180,7 +164,6 @@ export function createPushToTalkSession() {
               resolve();
             }
           };
-          const timeoutFallback = setTimeout(finish, 1500);
 
           recognition.onresult = (event) => {
             let finalText = "";
@@ -194,19 +177,26 @@ export function createPushToTalkSession() {
                 interimText += `${text} `;
               }
             }
-            finalTranscript = finalText.trim();
+            if (finalText.trim()) {
+              finalTranscript = finalText.trim();
+            }
             interimTranscript = interimText.trim();
-            onInterim((finalTranscript || interimTranscript).trim());
+            const combined = [finalTranscript, interimTranscript].filter(Boolean).join(" ").trim();
+            if (combined) {
+              lastTranscript = combined;
+              onInterim(combined);
+            }
           };
 
           recognition.onerror = (event) => {
-            speechError = event?.error || "speech-error";
-            clearTimeout(timeoutFallback);
+            const code = event?.error || "speech-error";
+            if (!(lastTranscript && (code === "no-speech" || code === "aborted"))) {
+              speechError = code;
+            }
             finish();
           };
 
           recognition.onend = () => {
-            clearTimeout(timeoutFallback);
             finish();
           };
         });
@@ -214,10 +204,51 @@ export function createPushToTalkSession() {
         try {
           recognition.start();
         } catch {
+          recognition = null;
           speechEndedPromise = Promise.resolve();
         }
       }
     }
+
+    try {
+      activeStream = await mediaDevices.getUserMedia({
+        audio: {
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        }
+      });
+    } catch (err) {
+      if (recognition) {
+        try {
+          recognition.abort();
+        } catch {
+          // Ignore abort errors after failed mic request.
+        }
+        recognition = null;
+      }
+      if (err && (err.name === "NotAllowedError" || err.name === "PermissionDeniedError")) {
+        throw new Error("MIC_DENIED");
+      }
+      throw new Error("MIC_FAILED");
+    }
+
+    if (stopped) {
+      for (const track of activeStream.getTracks()) {
+        track.stop();
+      }
+      activeStream = null;
+      return;
+    }
+
+    startTime = performance.now();
+    mediaRecorder = new MediaRecorderCtor(activeStream);
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        chunks.push(event.data);
+      }
+    };
+    mediaRecorder.start(100);
   }
 
   async function stop() {
@@ -225,7 +256,7 @@ export function createPushToTalkSession() {
       return null;
     }
     stopped = true;
-    const elapsedSeconds = (performance.now() - startTime) / 1000;
+    const elapsedSeconds = startTime > 0 ? (performance.now() - startTime) / 1000 : 0;
 
     const recorderDone = new Promise((resolve) => {
       if (!mediaRecorder || mediaRecorder.state === "inactive") {
@@ -244,19 +275,23 @@ export function createPushToTalkSession() {
       }
     }
 
-    await recorderDone;
-    if (activeStream) {
-      for (const track of activeStream.getTracks()) {
-        track.stop();
+    try {
+      await Promise.all([
+        recorderDone,
+        Promise.race([
+          speechEndedPromise,
+          new Promise((resolve) => setTimeout(resolve, postStopWaitMs))
+        ])
+      ]);
+    } finally {
+      if (activeStream) {
+        for (const track of activeStream.getTracks()) {
+          track.stop();
+        }
       }
     }
 
-    await Promise.race([
-      speechEndedPromise,
-      new Promise((resolve) => setTimeout(resolve, 650))
-    ]);
-
-    const transcript = (finalTranscript || interimTranscript).trim();
+    const transcript = (lastTranscript || [finalTranscript, interimTranscript].filter(Boolean).join(" ")).trim();
     if (elapsedSeconds < MIN_CLIP_SECONDS) {
       return {
         tooShort: true,
@@ -278,7 +313,7 @@ export function createPushToTalkSession() {
       };
     }
 
-    const decoded = await decodeBlobToMono16k(blob);
+    const decoded = await decodeBlob(blob);
     const actualDuration = Math.max(elapsedSeconds, decoded.durationSeconds || 0);
     if (actualDuration < MIN_CLIP_SECONDS) {
       return {

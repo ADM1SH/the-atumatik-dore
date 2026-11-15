@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { normalizeCommandText, matchModeACommand } from "../src/mode-a.js";
 import { buildModeBMessages, validateModeBReply, mapGroqHttpError, fetchGroqModels, callGroqModeB, FALLBACK_GROQ_MODEL } from "../src/mode-b.js";
+import { createPushToTalkSession } from "../src/audio.js";
 
 test("Mode A normalizes case and punctuation", () => {
   assert.equal(normalizeCommandText("  Open the Door, Please! "), "open the door please");
@@ -99,4 +100,80 @@ test("Mode B callGroqModeB enforces missing key and network offline handling", a
   });
   assert.equal(offline.ok, false);
   assert.equal(offline.reason, "Offline");
+});
+
+test("Push-to-talk keeps waiting for final onresult after button release even beyond 1.5s", async () => {
+  let trackStopped = false;
+  let aborted = false;
+  let activeRec = null;
+
+  class FakeRecognition {
+    constructor() {
+      activeRec = this;
+      this.onresult = null;
+      this.onerror = null;
+      this.onend = null;
+    }
+    start() {}
+    abort() {
+      aborted = true;
+    }
+    stop() {
+      // Simulate Chrome flushing final result 60 ms after release
+      setTimeout(() => {
+        if (this.onresult) {
+          this.onresult({
+            results: [{ isFinal: true, 0: { transcript: "open the door" } }]
+          });
+        }
+        if (this.onend) {
+          this.onend();
+        }
+      }, 60);
+    }
+  }
+
+  class FakeRecorder {
+    constructor() {
+      this.state = "inactive";
+      this.mimeType = "audio/webm";
+      this.ondataavailable = null;
+      this.onstop = null;
+    }
+    start() {
+      this.state = "recording";
+      if (this.ondataavailable) {
+        this.ondataavailable({ data: new Blob([new Uint8Array([1, 2, 3])], { type: "audio/webm" }) });
+      }
+    }
+    stop() {
+      this.state = "inactive";
+      if (this.onstop) {
+        this.onstop();
+      }
+    }
+  }
+
+  const session = createPushToTalkSession({
+    getSpeechCtor: () => FakeRecognition,
+    mediaDevices: {
+      getUserMedia: async () => ({
+        getTracks: () => [{ stop: () => { trackStopped = true; } }]
+      })
+    },
+    MediaRecorderCtor: FakeRecorder,
+    decodeBlob: async () => ({ samples: new Float32Array(16000 * 1.7), durationSeconds: 1.7 }),
+    postStopWaitMs: 500
+  });
+
+  await session.start({ recognizeSpeech: true });
+  // Simulate holding longer than old 1500 ms premature timer
+  await new Promise((r) => setTimeout(r, 1550));
+  const result = await session.stop();
+
+  assert.ok(activeRec);
+  assert.equal(aborted, false);
+  assert.equal(trackStopped, true);
+  assert.equal(result.tooShort, false);
+  assert.equal(result.transcript, "open the door");
 });

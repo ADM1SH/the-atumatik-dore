@@ -1,6 +1,6 @@
 # Bugs and Known Risks
 
-Last update: 15/11/2026.
+Last update: 15/11/2026 (19:57 Asia/Kuala_Lumpur).
 
 ## Bug Report Template
 
@@ -50,3 +50,11 @@ None.
 - Reproduction: Reload `guide.html` on `375x812` viewport with cache disabled and `Slow 4G` plus `4x` CPU slowdown.
 - Root cause: `font-display: swap` allowed fallback text to paint before `jost-latin.woff2` arrived.
 - Fix: Added `rel="preload"` tags for both self-hosted WOFF2 fonts in `index.html` and `guide.html`, and switched `@font-face` rules in `design/tokens.css` to `font-display: optional`. Re-tested cold Slow 4G mobile CLS at `0.00`.
+
+### BUG-004: Push-to-talk speech recognition resolved before button release
+- Date: 15/11/2026
+- Status: Fixed
+- Symptom: Holding the push-to-talk button longer than `1.5` seconds caused `Not understood (no speech recognized).` even during clear speech.
+- Reproduction: Hold Talk for more than `1.5` seconds, speak clearly, and release the button.
+- Root cause: `src/audio.js` started a `1500` ms fallback timer inside `start()` instead of after `recognition.stop()`. It also blocked `recognition.start()` behind `getUserMedia`, stopped mic tracks before speech flush finished, and forced `sampleRate: 16000`.
+- Fix: Moved the `1800` ms fallback wait into `stop()`, started recognition at once, and stopped mic tracks after speech ends. Removed hardware `sampleRate` lock, added error mapping in `src/app.js`, and added a regression test in `tests/mode-a.test.js`.
