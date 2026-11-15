@@ -177,3 +177,41 @@ test("Push-to-talk keeps waiting for final onresult after button release even be
   assert.equal(result.tooShort, false);
   assert.equal(result.transcript, "open the door");
 });
+
+test("Mode B uses low reasoning_effort and sufficient max_tokens for gpt-oss and surfaces 400 detail", async () => {
+  let capturedBody = null;
+  const okRes = await callGroqModeB({
+    apiKey: "demo-test-key",
+    model: "openai/gpt-oss-20b",
+    rules: "Allow open.",
+    doorState: "CLOSED",
+    locked: false,
+    transcript: "open please",
+    fetchImpl: async (_url, init) => {
+      capturedBody = JSON.parse(init.body);
+      return {
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: '{"action":"open","reason":"Polite command"}' } }]
+        })
+      };
+    }
+  });
+  assert.equal(okRes.ok, true);
+  assert.equal(okRes.action, "open");
+  assert.equal(capturedBody.reasoning_effort, "low");
+  assert.ok(capturedBody.max_tokens >= 400);
+
+  const errRes = await callGroqModeB({
+    apiKey: "demo-test-key",
+    model: "openai/gpt-oss-20b",
+    transcript: "open please",
+    fetchImpl: async () => ({
+      ok: false,
+      status: 400,
+      json: async () => ({ error: { message: "Failed to generate JSON." } })
+    })
+  });
+  assert.equal(errRes.ok, false);
+  assert.equal(errRes.reason, "Request failed (400): Failed to generate JSON.");
+});

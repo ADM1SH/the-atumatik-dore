@@ -101,7 +101,7 @@ export function validateModeBReply(rawContent) {
   return { valid: true, action, reason };
 }
 
-export function mapGroqHttpError(status) {
+export function mapGroqHttpError(status, detail = "") {
   if (status === 401) {
     return "Key rejected";
   }
@@ -111,7 +111,8 @@ export function mapGroqHttpError(status) {
   if (status >= 500) {
     return "Groq is not available";
   }
-  return `Request failed (${status})`;
+  const cleanDetail = typeof detail === "string" ? detail.trim().slice(0, 120) : "";
+  return cleanDetail ? `Request failed (${status}): ${cleanDetail}` : `Request failed (${status})`;
 }
 
 export async function fetchGroqModels({ apiKey, fetchImpl = fetch }) {
@@ -204,6 +205,17 @@ export async function callGroqModeB({
       }
     : { type: "json_object" };
 
+  const requestBody = {
+    model: chosenModel,
+    temperature: 0,
+    max_tokens: 512,
+    messages: buildModeBMessages({ rules, doorState, locked, transcript }),
+    response_format: responseFormat
+  };
+  if (chosenModel.startsWith("openai/gpt-oss-")) {
+    requestBody.reasoning_effort = "low";
+  }
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -214,21 +226,22 @@ export async function callGroqModeB({
         Authorization: `Bearer ${apiKey.trim()}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: chosenModel,
-        temperature: 0,
-        max_tokens: 120,
-        messages: buildModeBMessages({ rules, doorState, locked, transcript }),
-        response_format: responseFormat
-      }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal
     });
 
     if (!response.ok) {
+      let errDetail = "";
+      try {
+        const errPayload = await response.json();
+        errDetail = errPayload?.error?.message || "";
+      } catch {
+        errDetail = "";
+      }
       return {
         ok: false,
         action: "none",
-        reason: mapGroqHttpError(response.status)
+        reason: mapGroqHttpError(response.status, errDetail)
       };
     }
 

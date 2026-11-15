@@ -1,6 +1,6 @@
 # Handoff
 
-Last update: 15/11/2026 (19:57 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (20:09 Asia/Kuala_Lumpur).
 
 ## 1. Goals
 
@@ -33,6 +33,7 @@ Last update: 15/11/2026 (19:57 Asia/Kuala_Lumpur).
 - Completed documentation updates in `implementation_plan.md`, `testing.md`, `audit.md`, `task_today.md`, and `handoff.md`.
 - Fixed `BUG-004` in `src/audio.js` and `src/app.js` so push-to-talk waits up to `1800` ms after release for final speech results.
 - Added a `1550` ms push-to-talk regression test in `tests/mode-a.test.js` (`16/16` unit tests pass).
+- Fixed `BUG-005` in `src/mode-b.js` (`max_tokens: 512`, `reasoning_effort: "low"`, and `400` error detail reporting) with `17/17` unit tests passing.
 
 ## 5. Failed attempts
 

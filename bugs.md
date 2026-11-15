@@ -1,6 +1,6 @@
 # Bugs and Known Risks
 
-Last update: 15/11/2026 (19:57 Asia/Kuala_Lumpur).
+Last update: 15/11/2026 (20:09 Asia/Kuala_Lumpur).
 
 ## Bug Report Template
 
@@ -58,3 +58,11 @@ None.
 - Reproduction: Hold Talk for more than `1.5` seconds, speak clearly, and release the button.
 - Root cause: `src/audio.js` started a `1500` ms fallback timer inside `start()` instead of after `recognition.stop()`. It also blocked `recognition.start()` behind `getUserMedia`, stopped mic tracks before speech flush finished, and forced `sampleRate: 16000`.
 - Fix: Moved the `1800` ms fallback wait into `stop()`, started recognition at once, and stopped mic tracks after speech ends. Removed hardware `sampleRate` lock, added error mapping in `src/app.js`, and added a regression test in `tests/mode-a.test.js`.
+
+### BUG-005: Groq `openai/gpt-oss-20b` returned HTTP 400 under 120 max_tokens
+- Date: 15/11/2026
+- Status: Fixed
+- Symptom: Mode B voice command failed with `Mode B error: Request failed (400)` while using `openai/gpt-oss-20b`.
+- Reproduction: Enable Mode B with a valid Groq key, speak a door command, and trigger `callGroqModeB`.
+- Root cause: `src/mode-b.js` sent `max_tokens: 120` without `reasoning_effort: "low"` on a reasoning model, causing Groq JSON generation truncation (`400`), and omitted the server error detail.
+- Fix: Raised `max_tokens` to `512`, set `reasoning_effort: "low"` for `openai/gpt-oss-*` models, surfaced `400` error details in `mapGroqHttpError`, and added unit tests in `tests/mode-a.test.js`.
