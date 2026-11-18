@@ -19,8 +19,12 @@ export const ENROLMENT_SENTENCES = Object.freeze([
 
 const STORAGE_KEYS = Object.freeze({
   VOICEPRINT: "atumatik_voiceprint_v1",
-  THRESHOLD: "atumatik_vp_threshold"
+  THRESHOLD: "atumatik_vp_threshold",
+  CONSENT: "atumatik_pdpa_consent_v1",
+  PARTIAL: "atumatik_enrol_partial_v1"
 });
+
+const MODEL_CACHE_NAME = "transformers-cache";
 
 let cachedProcessor = null;
 let cachedModel = null;
@@ -83,6 +87,27 @@ export function isModelLoaded() {
   return Boolean(cachedProcessor && cachedModel);
 }
 
+export async function isModelCached(cacheStorage = globalThis.caches) {
+  try {
+    if (!cacheStorage || !(await cacheStorage.has(MODEL_CACHE_NAME))) {
+      return false;
+    }
+    const cache = await cacheStorage.open(MODEL_CACHE_NAME);
+    const requests = await cache.keys();
+    return requests.some((r) => r.url.includes(VOICEPRINT_MODEL_ID) && r.url.endsWith(".onnx"));
+  } catch {
+    return false;
+  }
+}
+
+export async function requestPersistentStorage() {
+  try {
+    return Boolean(await navigator.storage?.persist?.());
+  } catch {
+    return false;
+  }
+}
+
 export async function loadVoiceModel(onProgress = () => {}) {
   if (cachedProcessor && cachedModel) {
     return { processor: cachedProcessor, model: cachedModel };
@@ -98,7 +123,10 @@ export async function loadVoiceModel(onProgress = () => {}) {
 
     env.allowLocalModels = false;
     env.useBrowserCache = true;
+    env.cacheKey = MODEL_CACHE_NAME;
 
+    const cached = await isModelCached();
+    const label = (file) => (cached ? `Loading ${file} from device cache` : `Downloading ${file}`);
     const fileProgress = new Map();
     const handleProgress = (info) => {
       if (!info) {
@@ -121,7 +149,7 @@ export async function loadVoiceModel(onProgress = () => {}) {
         onProgress({
           phase: "download",
           percent: pct,
-          text: `Downloading ${info.file}: ${mbLoaded} / ${mbTotal} MB (${pct}%)`
+          text: `${label(info.file)}: ${mbLoaded} / ${mbTotal} MB (${pct}%)`
         });
       } else if (info.status === "initiate" && info.file) {
         onProgress({
@@ -146,6 +174,7 @@ export async function loadVoiceModel(onProgress = () => {}) {
 
     cachedProcessor = processor;
     cachedModel = model;
+    requestPersistentStorage();
     onProgress({ phase: "ready", percent: 100, text: "Voice model ready (quantized ONNX)." });
     return { processor, model };
   })();
@@ -205,11 +234,61 @@ export function saveVoiceprint(vector, storage = window.localStorage) {
     vector: Array.from(l2Normalize(vector))
   };
   storage.setItem(STORAGE_KEYS.VOICEPRINT, JSON.stringify(payload));
+  storage.removeItem(STORAGE_KEYS.PARTIAL);
   return payload;
 }
 
 export function deleteVoiceprint(storage = window.localStorage) {
   storage.removeItem(STORAGE_KEYS.VOICEPRINT);
+  storage.removeItem(STORAGE_KEYS.PARTIAL);
+}
+
+export function loadEnrolmentProgress(storage = window.localStorage) {
+  const empty = () => new Array(ENROLMENT_SENTENCES.length).fill(null);
+  try {
+    const parsed = JSON.parse(storage.getItem(STORAGE_KEYS.PARTIAL));
+    if (!Array.isArray(parsed) || parsed.length !== ENROLMENT_SENTENCES.length) {
+      return empty();
+    }
+    const dims = new Set();
+    for (const vec of parsed) {
+      if (vec === null) {
+        continue;
+      }
+      const valid = Array.isArray(vec) && vec.length > 0 && vec.every((n) => typeof n === "number" && Number.isFinite(n));
+      if (!valid) {
+        return empty();
+      }
+      dims.add(vec.length);
+    }
+    return dims.size > 1 ? empty() : parsed;
+  } catch {
+    return empty();
+  }
+}
+
+export function saveEnrolmentProgress(progress, storage = window.localStorage) {
+  storage.setItem(STORAGE_KEYS.PARTIAL, JSON.stringify(progress));
+}
+
+export function loadConsent(storage = window.localStorage) {
+  try {
+    return Boolean(storage.getItem(STORAGE_KEYS.CONSENT));
+  } catch {
+    return false;
+  }
+}
+
+export function saveConsent(granted, storage = window.localStorage) {
+  try {
+    if (granted) {
+      storage.setItem(STORAGE_KEYS.CONSENT, new Date().toISOString());
+    } else {
+      storage.removeItem(STORAGE_KEYS.CONSENT);
+    }
+  } catch {
+    // Storage unavailable: consent then lasts for this page load only.
+  }
 }
 
 export function loadThreshold(storage = window.localStorage) {

@@ -1,6 +1,6 @@
 # Bugs and Known Risks
 
-Last update: 15/11/2026 (20:09 Asia/Kuala_Lumpur).
+Last update: 18/11/2026.
 
 ## Bug Report Template
 
@@ -66,3 +66,11 @@ None.
 - Reproduction: Enable Mode B with a valid Groq key, speak a door command, and trigger `callGroqModeB`.
 - Root cause: `src/mode-b.js` sent `max_tokens: 120` without `reasoning_effort: "low"` on a reasoning model, causing Groq JSON generation truncation (`400`), and omitted the server error detail.
 - Fix: Raised `max_tokens` to `512`, set `reasoning_effort: "low"` for `openai/gpt-oss-*` models, surfaced `400` error details in `mapGroqHttpError`, and added unit tests in `tests/mode-a.test.js`.
+
+### BUG-006: Voice setup and model state looked lost after every reload or page change
+- Date: 18/11/2026
+- Status: Fixed
+- Symptom: After a reload or a visit to `guide.html`, the five sentence rows showed "Pending", the consent box was empty, Talk was blocked, and the model progress text said "Downloading ... 97.0 MB".
+- Reproduction: Enrol a voiceprint, reload `index.html`. Or capture two sentences and reload.
+- Root cause: Four gaps in `src/app.js` and `src/voiceprint.js`. Partial enrolment lived only in memory. The rows ignored a saved voiceprint. The consent tick was not saved. `transformers.js` reports "progress" events for cache hits, so the UI labelled a cache read as a download. Live check on 18/11/2026: the model files were already in the `transformers-cache` Cache API entry and a reload sent zero requests to `huggingface.co`.
+- Fix: Save partial enrolment (`atumatik_enrol_partial_v1`) and consent (`atumatik_pdpa_consent_v1`) in `localStorage`. Show a saved voiceprint as "Captured (saved)" and disable the record buttons. Label cache reads as "Loading ... from device cache". Load the model in the background only when it is already cached, a voiceprint exists, and consent is saved. Request persistent storage after a model load. Added `tests/voiceprint-storage.test.js` (8 tests, failing before the fix, `25/25` pass after).

@@ -17,7 +17,12 @@ import {
   extractVoiceEmbedding,
   computeMeanEmbedding,
   cosineSimilarity,
-  loadVoiceModel
+  loadVoiceModel,
+  isModelCached,
+  loadConsent,
+  saveConsent,
+  loadEnrolmentProgress,
+  saveEnrolmentProgress
 } from "./voiceprint.js";
 import {
   detectBrowserSupport,
@@ -118,7 +123,7 @@ function initDemoPage() {
   let activeGroqModel = FALLBACK_GROQ_MODEL;
   let groqInFlight = false;
   let activeTalkSession = null;
-  let enrolmentEmbeddings = new Array(ENROLMENT_SENTENCES.length).fill(null);
+  let enrolmentEmbeddings = loadEnrolmentProgress();
 
   const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const fsm = createDoorFSM({
@@ -312,6 +317,9 @@ function initDemoPage() {
     modelProgressText.textContent = progress.text || "Loading model...";
   }
 
+  consentCheckbox.checked = loadConsent();
+  consentCheckbox.addEventListener("change", () => saveConsent(consentCheckbox.checked));
+
   loadModelBtn.addEventListener("click", async () => {
     if (!consentCheckbox.checked) {
       voiceprintStatus.textContent = "Read and accept the PDPA 2010 notice first.";
@@ -345,7 +353,9 @@ function initDemoPage() {
 
   function renderEnrolmentSentences() {
     enrolmentList.textContent = "";
+    const enrolled = Boolean(loadVoiceprint());
     ENROLMENT_SENTENCES.forEach((sentence, idx) => {
+      const captured = enrolled || Boolean(enrolmentEmbeddings[idx]);
       const li = document.createElement("li");
       li.className = "sentence-item";
 
@@ -356,14 +366,15 @@ function initDemoPage() {
       rightGroup.className = "button-grid";
 
       const stateSpan = document.createElement("span");
-      stateSpan.className = enrolmentEmbeddings[idx]
+      stateSpan.className = captured
         ? "status-badge status-badge-ok"
         : "status-badge";
-      stateSpan.textContent = enrolmentEmbeddings[idx] ? "Captured" : "Pending";
+      stateSpan.textContent = captured ? "Captured (saved)" : "Pending";
 
       const recBtn = document.createElement("button");
       recBtn.type = "button";
       recBtn.textContent = "Hold to record";
+      recBtn.disabled = enrolled;
 
       let session = null;
       const startRec = async () => {
@@ -403,12 +414,14 @@ function initDemoPage() {
         try {
           const emb = await extractVoiceEmbedding(result.samples, handleModelProgress);
           enrolmentEmbeddings[idx] = emb;
+          saveEnrolmentProgress(enrolmentEmbeddings);
           stateSpan.textContent = `Captured (${result.durationSeconds.toFixed(1)} s)`;
           stateSpan.className = "status-badge status-badge-ok";
 
           if (enrolmentEmbeddings.every(Boolean)) {
             const mean = computeMeanEmbedding(enrolmentEmbeddings);
             saveVoiceprint(mean);
+            renderEnrolmentSentences();
           }
           refreshVoiceprintUI();
         } catch (err) {
@@ -757,4 +770,22 @@ function initDemoPage() {
   renderEnrolmentSentences();
   refreshVoiceprintUI();
   renderLog();
+
+  // Restore the voice model from the device cache. This never starts the 97 MB download.
+  isModelCached().then(async (cached) => {
+    if (!cached) {
+      return;
+    }
+    if (!loadVoiceprint() || !consentCheckbox.checked) {
+      modelProgressWrap.hidden = false;
+      modelProgressBar.value = 100;
+      modelProgressText.textContent = "Voice model cached on this device.";
+      return;
+    }
+    try {
+      await loadVoiceModel(handleModelProgress);
+    } catch (err) {
+      voiceprintStatus.textContent = `Model load failed: ${err.message}`;
+    }
+  });
 }

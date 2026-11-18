@@ -1,6 +1,6 @@
 # Architecture and Project Decisions
 
-Last update: 15/11/2026.
+Last update: 18/11/2026.
 
 ## Numbered Decisions
 
@@ -49,6 +49,12 @@ Last update: 15/11/2026.
 - Date: 15/11/2026
 - Choice: Recommend Raspberry Pi 4 Model B (4 GB) paired with a dry-contact relay or ESP32 Wi-Fi bridge in `guide.html`.
 - Reason: Cytron Malaysia (`RM438.20` board) and Mybotic (`RM490.00` kit) verified 15/11/2026 prices offer sufficient RAM for local voice processing. Pi Zero 2 W (`512 MB` RAM) lacks headroom, while Pi 5 kits cost more.
+
+### DEC-010: Per-Device Persistence of Voice Setup
+- Date: 18/11/2026
+- Choice: Save the PDPA consent record, unfinished enrolment vectors, and the enrolled voiceprint in `localStorage`. Keep the voice model files in the browser Cache API (`transformers-cache`). After a reload, load the model in the background only when the model file is already cached, a voiceprint exists, and consent is saved. Never start the 97 MB download without a user click. Request persistent storage with `navigator.storage.persist()` after a model load.
+- Reason: Adam had to repeat enrolment and consent after every reload. Browser storage is per browser profile and per device, which matches the request. Unticking the consent box removes the consent record. "Delete my voiceprint" removes the voiceprint and unfinished vectors but keeps consent, so "Re-record" does not ask for consent again.
+- Limit: Private windows and "clear site data" erase everything. Chrome can deny `persist()`, and it did on a fresh `localhost` profile on 18/11/2026.
 
 ## Synthetic Two-Voice Smoke Test Results
 

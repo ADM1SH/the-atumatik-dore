@@ -1,10 +1,10 @@
 # Testing Checklist: The Atumatik DoRe
 
-Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
+Last update: 18/11/2026.
 
 ## 1. Automated Unit Tests (`node --test`)
 
-All 15 automated unit tests in `tests/door-fsm.test.js` and `tests/mode-a.test.js` passed (`0` failed) under Node `v26.11.1`.
+All 25 automated unit tests in `tests/door-fsm.test.js`, `tests/mode-a.test.js`, and `tests/voiceprint-storage.test.js` passed (`0` failed) under Node `v26.11.1`.
 
 - [x] `open` transitions from `CLOSED` (unlocked) to `OPENING`.
 - [x] `open` transitions from `CLOSING` to `OPENING`.
@@ -41,3 +41,12 @@ All 15 automated unit tests in `tests/door-fsm.test.js` and `tests/mode-a.test.j
 - [x] Lighthouse v13.6.0 audits score `100` in Accessibility, Best Practices, SEO, and Agentic Browsing on `index.html` and `guide.html` with model unloaded.
 - [ ] Live human calibration: Adam records his live voice and a friend's live voice to confirm final threshold above or below PROVISIONAL `0.78`.
 - [x] Live URL `https://adm1sh.github.io/the-atumatik-dore/` loads cleanly after Argon Step 7 review and Step 10.6 Pages deployment.
+
+## 3. Saved State per Device (BUG-006, 18/11/2026)
+
+- [x] Enrolment progress, consent, and model cache helpers pass 8 unit tests in `tests/voiceprint-storage.test.js`.
+- [x] Reload on `localhost` keeps consent, shows five "Captured (saved)" rows with disabled record buttons, and loads the cached model with zero `huggingface.co` requests and zero console errors (browser pane, seeded voiceprint).
+- [x] "Delete my voiceprint" re-enables the record buttons and keeps consent.
+- [x] Two seeded partial vectors survive a visit to `guide.html` and back.
+- [ ] Live device check: Adam enrols 2 sentences, reloads, records the other 3, and reloads again on desktop Chrome and on Android Chrome.
+- [ ] Live microphone check of the fifth sentence: the rows re-render as saved and the record buttons become disabled.

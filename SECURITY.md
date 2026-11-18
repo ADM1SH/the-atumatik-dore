@@ -1,6 +1,6 @@
 # Security and Privacy Specification
 
-Last update: 15/11/2026.
+Last update: 18/11/2026.
 
 ## 1. Groq API Key Handling
 
@@ -17,8 +17,12 @@ Last update: 15/11/2026.
 - Under PDPA 2010 (Malaysia), biometric voice data counts as personal data.
 - Before any microphone capture, the page displays an explicit consent box.
 - The page converts microphone audio into a numeric vector (`Float32Array`) and discards the raw audio immediately.
-- Only the mean of the five normalized embeddings is saved in `localStorage["atumatik_voiceprint_v1"]`.
+- After enrolment completes, only the mean of the five normalized embeddings stays in `localStorage["atumatik_voiceprint_v1"]`.
+- While enrolment is unfinished, each captured sentence vector is saved in `localStorage["atumatik_enrol_partial_v1"]`. Completing enrolment or clicking "Delete my voiceprint" removes it.
+- The consent record is saved in `localStorage["atumatik_pdpa_consent_v1"]` as an ISO timestamp. Unticking the consent box removes it.
+- The voice model files are stored in the browser Cache API entry `transformers-cache`. They hold no personal data.
 - One click on "Delete my voiceprint" wipes the stored vector from `localStorage`.
+- `localStorage` and the Cache API belong to the origin `https://adm1sh.github.io`, not to this repository path. Any other Pages site under that origin can read the voiceprint vector, the consent record, and the Groq key. This risk existed for the Groq key before this change.
 - The consent notice states two external transmissions.
 - Chrome `webkitSpeechRecognition` sends audio to Google servers unless local recognition is active.
 - Mode B sends recognized text (never audio) to Groq.

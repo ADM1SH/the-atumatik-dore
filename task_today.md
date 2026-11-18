@@ -1,10 +1,10 @@
 # Task Today
 
-Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
+Last update: 18/11/2026.
 
 ## Single Active Task
 
-Run live microphone enrolment with two human speakers on GitHub Pages to finalize the PROVISIONAL `0.78` speaker threshold.
+After the BUG-006 fix is pushed, enrol on a real device. Record 2 sentences, reload, record the other 3, and reload again. Then test live scores with two human speakers to finalize the PROVISIONAL `0.78` speaker threshold.
 
 ## Files Needed for This Task
 
