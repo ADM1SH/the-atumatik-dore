@@ -5,7 +5,7 @@ Last update: 15/11/2026.
 ## 1. JavaScript Rules
 
 - Write standard ES modules (`import` and `export`) compatible with modern Chrome, Edge, and Node `node --test`.
-- Keep pure logic (`src/door-fsm.js`, `src/mode-a.js`) completely free of `window`, `document`, or DOM globals.
+- Keep pure logic (`src/car.js`, `src/child-alert.js`, `src/mode-a.js`) completely free of `window`, `document`, or DOM globals.
 - Validate all external data (Groq API payloads, `localStorage` JSON parses, speech transcripts) at module boundaries.
 - Never write `innerHTML` with user-supplied or API-supplied strings. Use `textContent` and `createElement`.
 - Use explicit error returns or typed error codes rather than silent failures.

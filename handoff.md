@@ -4,49 +4,53 @@ Last update: 18/11/2026.
 
 ## 1. Goals
 
-- Build "The Atumatik DoRe", a static voice-controlled automatic sliding door demo and hardware guide for GitHub Pages (`ADM1SH/the-atumatik-dore`).
-- Provide two pages (`index.html` and `guide.html`) in plain HTML, CSS, and ES modules with zero build step.
-- Support Mode A (offline coded commands), Mode B (browser-direct Groq API rules with user-supplied key), and a lazy-loaded `Xenova/wavlm-base-plus-sv` speaker lock with PDPA 2010 notice.
-- Keep voice setup state per device: consent, enrolment progress, voiceprint, and the cached voice model survive reloads and page changes (BUG-006).
-- Complete Section 15 checks, Lighthouse audits, Argon Step 7 review, and Step 10.6 GitHub Pages deployment.
+- Replace the sliding door demo with a Proton Gen2 CPS (manual) car demo in a black body with bronze rims. Everything is a browser demo. No real hardware is controlled.
+- Add voice-controlled windows, a keyfob, a child-in-car alert, and a kick sensor for the doors.
+- Keep Mode A, Mode B, the speaker lock, the PDPA 2010 notice, the strict CSP, and the per-device voice setup (BUG-006, DEC-010).
+- Work on branch `feat/proton-gen2`. Do not push to `main`. Do not deploy to GitHub Pages.
 
 ## 2. Current state
 
-- Phases 1 to 9 are complete on branch `main`.
-- The BUG-006 fix (saved state per device) is in the working tree. It is NOT committed and NOT pushed. The live site `https://adm1sh.github.io/the-atumatik-dore/` still serves the build without the fix until Adam commits and pushes.
-- `node --test tests/` passes `25/25`.
-- Browser pane check on `localhost` (18/11/2026, seeded voiceprint): reload keeps consent, shows five "Captured (saved)" rows, loads the cached model in the background, sends zero `huggingface.co` requests, and shows zero console errors.
-- Default threshold `0.78` remains `PROVISIONAL` until Adam tests live audio from two human speakers.
+- All six phases are built on branch `feat/proton-gen2`. Nothing is committed. The deletion of `src/door-fsm.js` and `tests/door-fsm.test.js` is staged.
+- `node --test tests/` passes `49/49` (was `25/25`).
+- Lighthouse (v13.6.0, mobile and desktop) scores `100` in Accessibility, Best Practices, SEO, and Agentic Browsing on `index.html` (60 audits pass) and `guide.html` (57 pass) on `localhost`. The live site before the change scored `100` (57 and 56 pass).
+- Browser pane checks on `localhost`: the rules, keyfob buttons, kick table, every alert response and cancel, and the 60 s ventilate (50, 100, 50, 50 read at 68 s) ran in the page, the BUG-006 restore was re-checked on the final `app.js`, zero console errors, no horizontal scroll at 375 px, kick zones `44 x 44` px, reduced motion gives `0 s` transitions.
+- Six boards in `design/boards/` were captured again. `og-share.png` and `favicon.svg` now show the car. `404.html` text is updated.
+- The repository scan found zero em dashes, zero en dashes, zero secrets, zero real emails, and no reference images tracked.
+- The `0.78` speaker threshold stays `PROVISIONAL`.
 
 ## 3. Active files
 
-- `index.html`, `guide.html`, `404.html`, `robots.txt`, `sitemap.xml` (live GitHub Pages site)
-- `design/tokens.css`, `assets/styles.css`, `assets/favicon.svg`, `assets/og-share.png`, `assets/fonts/` (tokens, self-hosted fonts, icons)
-- `design/boards/*.png` (6 light, dark, and mobile verification screenshots)
-- `src/door-fsm.js`, `src/mode-a.js`, `src/mode-b.js`, `src/voiceprint.js`, `src/audio.js`, `src/app.js` (application ES modules)
-- `tests/door-fsm.test.js`, `tests/mode-a.test.js`, `tests/voiceprint-storage.test.js` (`node --test` unit tests)
-- `decisions.md`, `SECURITY.md`, `bugs.md`, `audit.md`, `testing.md`, `implementation_plan.md`, `task_today.md`, `handoff.md` (project records)
+- `index.html`, `guide.html`, `404.html`, `assets/styles.css`, `design/tokens.css`, `assets/favicon.svg`, `assets/og-share.png`
+- `src/car.js`, `src/child-alert.js`, `src/chime.js`, `src/mode-a.js`, `src/mode-b.js`, `src/app.js`
+- `tests/car.test.js`, `tests/child-alert.test.js`, `tests/chime.test.js`, `tests/mode-a.test.js`, `tests/voiceprint-storage.test.js`
+- Docs: `prd.md`, `ARCHITECTURE.md`, `SECURITY.md`, `testing.md`, `audit.md`, `decisions.md` (DEC-011, DEC-012), `README.md`, `DESIGN_SYSTEM.md`, `CODE_STYLE.md`, `GEMINI.md`, `implementation_plan.md`
+- `.claude/launch.json` (untracked preview config, do not commit)
+- Reference images stay in the `Gen2 Reference` folder outside the repo. Do not commit them.
 
 ## 4. Changes made
 
-- `src/voiceprint.js`: added `loadConsent`, `saveConsent`, `loadEnrolmentProgress`, `saveEnrolmentProgress`, `isModelCached`, and `requestPersistentStorage`. `saveVoiceprint` and `deleteVoiceprint` now clear unfinished enrolment vectors. Progress text says "Loading ... from device cache" when the model is cached.
-- `src/app.js`: restores the consent tick and unfinished enrolment at load, shows a saved voiceprint as five "Captured (saved)" rows with disabled record buttons, and loads the model in the background only when it is cached, a voiceprint exists, and consent is saved.
-- `index.html`: the PDPA notice now says this browser remembers consent and unfinished vectors and keeps the model files in its cache.
-- `tests/voiceprint-storage.test.js`: 8 new tests. They failed before the fix.
-- Docs: BUG-006 in `bugs.md`, DEC-010 in `decisions.md`, section 2 of `SECURITY.md` (including the shared-origin risk), and section 3 of `testing.md`.
+- Phase 1: car SVGs (side and top-down, 1 unit per 10 mm), tokens, five-section layout, door removal, gate moved to `#car-model`.
+- Phase 2: `src/car.js` (lock, window gate, kick, close door, keyfob buttons, internal `ventilate`) and tests. Door files removed with `git rm`.
+- Phase 3: Mode A window vocabulary (one command per sentence), Mode B schema with `target`, car state in the prompt, voice wiring, Mode B rules key `atumatik_modeb_rules_v2`.
+- Phase 4: `src/child-alert.js` (fixed deadline, injected clock), `src/chime.js` (WebAudio), banner with `role="alert"`, countdown with `role="timer"`, Sound toggle and status line.
+- Phase 5: keyfob panel, keyfob buttons answer the alert, kick table tests.
+- Phase 6: `guide.html` rewritten as a concept guide, `404.html`, favicon, OG image, docs, audit, boards.
+- Parts check on 18/11/2026: Cytron Robo ESP32 RM62.58 listed but "Out Of Stock". No presence radar module found at Cytron or Mybotic (marked "not verified" in the guide).
 
 ## 5. Failed attempts
 
-- Autobotic returned HTTP `404` and RS Components Malaysia returned HTTP `503` during price checks. Used Cytron Malaysia and Mybotic Malaysia (`200`) instead.
-- `@huggingface/transformers@4.3.2/dist/transformers.web.js` failed with bare specifier `"onnxruntime-web/webgpu"`. Switched to `transformers.min.js`.
-- Strict CSP blocked `blob:` WASM loading on `index.html` and `robots.txt` on `guide.html`. Updated CSP directives and re-verified zero errors.
-- The Claude in Chrome profile held no voiceprint and no model cache on 18/11/2026, so it could not show Adam's real state. The cache check ran in the browser pane instead. It proved the model cache survives a reload.
-- Chrome denied `navigator.storage.persist()` on a fresh `localhost` profile. Automatic eviction under low disk space is still possible.
+- The preview tab cached old CSS once. A forced reload fixed it.
+- `PIL` is not installed. Image measurement used a Swift script in the scratchpad.
+- A long `javascript_tool` wait timed out at 45 s. The page script still finished.
+- The 2005 plan drawing is `16%` too long for the 5-door spec. The 2007 side drawing is squashed vertically by about `1.10`. Both were corrected from the spec.
+- Mybotic search for `ld2410` returned no product. Cytron listed only a LoRaWAN radar (RM430.50, out of stock).
 
 ## 6. Next steps
 
-1. Ask Adam to commit and push the BUG-006 fix to `main` so GitHub Pages serves it.
-2. On desktop Chrome and Android Chrome: enrol 2 sentences, reload, record the other 3, and reload again. Check that the fifth sentence turns all rows to "Captured (saved)".
-3. Enrol Adam's voice across all five sentences and test live scores against a second speaker.
-4. Record live scores in `decisions.md` and update `DEFAULT_THRESHOLD` in `src/voiceprint.js` if needed.
-5. Optionally test Mode B in the browser with a temporary Groq key from console.groq.com.
+1. Adam reviews the branch and says when to commit. Commit only on request. Do not push to `main`.
+2. Hand tests: on a real phone and on desktop Chrome, speak window commands with Mode A and Mode B, try a stranger voice with a voiceprint enrolled, listen to the chime after one click, and tap each kick zone.
+3. Check that the car shape looks like a Gen2 CPS. Decide whether the guide needs a credit line for the reference photos.
+4. Parked: on desktop Chrome and Android Chrome, enrol 2 sentences, reload, record the other 3, and reload again. Check that the fifth sentence turns all rows to "Captured (saved)".
+5. Parked: enrol Adam's voice across all five sentences and test live scores against a second speaker. Record the scores in `decisions.md` and update `DEFAULT_THRESHOLD` in `src/voiceprint.js` if needed.
+6. Parked: test Mode B with a temporary Groq key from console.groq.com.

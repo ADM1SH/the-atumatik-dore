@@ -4,7 +4,7 @@ Last update: 15/11/2026.
 
 ## 1. Project Scope
 
-This public repository holds "The Atumatik DoRe", a static voice-controlled automatic door web demo for GitHub Pages.
+This public repository holds "The Atumatik DoRe", a static voice-controlled Proton Gen2 CPS car web demo for GitHub Pages.
 No backend server, no database, and no build step exist in this repository.
 This file holds project rules only.
 Do not copy global personal rules or local machine paths into this repository.

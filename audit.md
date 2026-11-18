@@ -1,6 +1,6 @@
 # Launch and Performance Audit
 
-Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
+Last update: 18/11/2026 (car demo update in section 6).
 
 ## 1. Website Performance Metrics (Model Unloaded)
 
@@ -38,7 +38,7 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | 8. Stop loading unused scripts | Done | Zero third-party scripts load during initial page boot. |
 | 9. Fix layout shifts | Done | Fixed `guide.html` Slow 4G mobile CLS from `0.14` to `0.00` (Lighthouse `0.065` to `0`). |
 | 10. Improve LCP | Done | Non-blocking initial layout achieves `46 ms` (`index.html`) and `26 ms` (`guide.html`) desktop LCP. |
-| 11. Reduce interaction delays | Done | Synchronous state transitions in `src/door-fsm.js` run immediately without blocking. |
+| 11. Reduce interaction delays | Done | Synchronous state changes in `src/car.js` run immediately. CSS animates for `0.6 s`. |
 | 12. Test on slow mobile connection | Done | Tested `Slow 4G` plus `4x` CPU slowdown on `375x812` viewport (`CLS 0.00`). |
 | 13. Run Lighthouse | Done | Audited `index.html` and `guide.html` on mobile and desktop with model unloaded. |
 | 14. Fix Lighthouse issues | Done | Fixed `connect-src 'self'` and font preloads so all 4 audited categories score `100`. |
@@ -106,9 +106,9 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | 7. Fix footer links | Done | Footer links connect Demo, Hardware Guide, and GitHub Repo cleanly. |
 | 8. Custom 404 page | Done | Created `404.html` and verified typography and links at `375 px`. |
 | 9. Update copyright year | Done | All footers display `15/11/2026`. |
-| 10. Compress images | Done | `assets/og-share.png` measures `6,567` bytes. |
-| 11. Fix broken buttons | Done | Verified manual door buttons, mode radios, key controls, log clear, and theme toggle in Chrome. |
-| 12. Add success messages | Done | Live status confirms door transitions, unlock, and key removal. |
+| 10. Compress images | Done | `assets/og-share.png` (car, 1200 x 630) measures `35,752` bytes. |
+| 11. Fix broken buttons | Done | Verified manual car buttons, kick zones, mode radios, key controls, log clear, and theme toggle in Chrome. |
+| 12. Add success messages | Done | Live status confirms car state changes, alert start and stop, unlock, and key removal. |
 | 13. Add error messages | Done | Verified locked warning, mic denied steps, unsupported UA banner, empty key, and `401` key rejection. |
 | 14. Remove placeholder text | Done | Realistic example rules and zero placeholder personal emails. |
 | 15. Remove unused navigation | Done | Navigation contains Demo and Hardware Guide links only. |
@@ -117,3 +117,37 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | 18. Make phone number clickable | N/A | No contact phone number belongs on this FYP demo. |
 | 19. Make email clickable | N/A | No real email address is included in this public repo. |
 | 20. Mobile optimize | Done | Captured 6 boards (`design/boards/`), checked `44x44` px targets, and verified light/dark contrast `>= 4.70:1`. |
+
+## 6. Car Demo Update (18/11/2026)
+
+Lighthouse v13.6.0 on `localhost`, mobile and desktop, all four categories `100`. Before (live site, same day): `100` on both pages.
+
+| Metric | `index.html` Before | `index.html` After | `guide.html` Before | `guide.html` After |
+|---|---|---|---|---|
+| Accessibility / Best Practices / SEO / Agentic Browsing (mobile) | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Same on desktop | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Audits passed | 57 | 60 | 56 | 57 |
+| JS in `src/` | 53,631 B | 75,929 B | n/a | n/a |
+| CSS (`tokens.css` + `styles.css`) | 13,509 B | 15,965 B | n/a | n/a |
+| Image weight (`favicon.svg` + `og-share.png`) | 6,981 B | 36,454 B | n/a | n/a |
+
+Protect checklist for the new features:
+
+| Item | Status | Notes |
+|---|---|---|
+| Rate limiting, API limits, spending caps | Unchanged | Same as section 3. Mode B still runs one call at a time with an 8 s timeout. |
+| Error handling, loading and empty states | Done | Refused car actions show a plain reason. The alert banner and countdown show state. Disabled-by-rule actions log the reason. |
+| Duplicate submissions | Done | Repeat actions (engine, lock, windows, doors) are refused without a change event. |
+| Payments, DB, uploads, uptime, backups | N/A | No payment, database, upload, or server exists. |
+
+Security checklist for the new features:
+
+| Item | Status | Notes |
+|---|---|---|
+| Validate all input | Done | Mode A one-command rule, Mode B action and target pair check, and car action checks. |
+| Escape user content | Done | All new text uses `textContent`. No `innerHTML`. |
+| Secrets and storage | Done | The child flag, owner distance, keyfob state, and car state stay in memory. The repository scan found no secrets. |
+| CSP | Done | No `style` attribute and no `<style>` block. SVG classes live in `styles.css`. Positions use `style.setProperty`. |
+| Dependencies | Done | No new dependency. |
+
+Site polish for the new features: favicon, OG image, `404.html`, and both pages updated. Boards re-captured (6) on 18/11/2026.

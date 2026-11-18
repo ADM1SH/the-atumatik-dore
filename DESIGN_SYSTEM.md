@@ -37,11 +37,11 @@ No generic gradients, glassmorphism, floating glows, decorative icons, or AI cop
 |---|---|---|
 | Standard navigation and controls | Jakob's Law | Place top navigation at top-left, standard buttons with clear text labels, and theme switch at top-right. |
 | Safe and effortless tapping | Fitts's Law | Make the Push-to-Talk trigger at least `56 px` tall near center, enforce `44x44 px` minimum buttons, and separate "Delete my voiceprint" and "Forget key" from safe actions by at least `16 px`. |
-| Structured scannable panels | Miller's Law | Group controls into distinct numbered sections (Door, Voice Input, Voice Setup, Event Log) separated by `24 px` spacing and `2 px` borders. |
+| Structured scannable panels | Miller's Law | Group controls into distinct numbered sections (Car Model, Voice Control, Voice Setup, Car Controls, Event Log) separated by `24 px` spacing and `2 px` borders. |
 | Clear low-friction choices | Hick's Law | Keep mode selection to two explicit radio buttons (Mode A vs Mode B) and label every control with plain words instead of bare icons. |
 | Tolerant command parsing | Postel's Law | Strip punctuation and mixed case in Mode A while producing strict normalized states and validated JSON actions in Mode B. |
 | Clear feedback on peaks and failures | Peak-End Rule | Show crisp per-sentence completion badges during 5-step enrolment and gentle, actionable plain-text messages for microphone denial, short clips, and API errors. |
 | Disciplined visual polish | Aesthetic-Usability Effect | Apply consistent `2 px` structural borders, aligned monospace data tables, and light/dark board parity while verifying real usability in Browser QA. |
 | Unmistakable state and primary triggers | Von Restorff Effect | Distinguish Push-to-Talk and Lock warning with color, solid border, text badge, and `aria-live="polite"`. Keep `3 px` `:focus-visible` outlines and `prefers-reduced-motion`. |
 | System absorbs complexity | Tesler's Law | Pre-fill realistic Mode B example rules, automatically select a fast Groq model via `/openai/v1/models`, and cache the ONNX model in the browser after first download. |
-| Immediate response and deliberate friction | Doherty Threshold | Render door state updates under `50 ms`, display download byte percentages during model fetch, and require deliberate hold-to-talk and confirmation text for voiceprint deletion. |
+| Immediate response and deliberate friction | Doherty Threshold | Render car state updates under `50 ms` (CSS animation `0.6 s`, `0 s` under reduced motion), display download byte percentages during model fetch, and require deliberate hold-to-talk and confirmation text for voiceprint deletion. |

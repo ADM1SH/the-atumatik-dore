@@ -1,6 +1,6 @@
 # Implementation Plan: The Atumatik DoRe
 
-Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
+Last update: 18/11/2026.
 
 | Phase | Owner | Status | Scope |
 |---|---|---|---|
@@ -8,7 +8,7 @@ Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 | Phase 2 | Argon + Hydrogen | [x] Complete | Gitignore and 14 STE documentation files |
 | Phase 3 | Hydrogen | [x] Complete | Git initialization, secret scan, initial docs push (steps 10.1 to 10.5) |
 | Phase 4 | Hydrogen | [x] Complete | Design tokens, self-hosted fonts, static assets, and 6 board screenshots |
-| Phase 5 | Hydrogen | [x] Complete | Pure modules (`door-fsm.js`, `mode-a.js`, `mode-b.js`) and `node --test` suite |
+| Phase 5 | Hydrogen | [x] Complete | Pure modules (originally `door-fsm.js`, `mode-a.js`, `mode-b.js`) and `node --test` suite |
 | Phase 6 | Hydrogen | [x] Complete | Interactive UI, audio capture, lazy voiceprint model, Groq integration, hardware guide |
 | Phase 7 | Hydrogen | [x] Complete | Section 15 QA checks, CSP model load test, synthetic voice smoke test, Lighthouse |
 | Phase 8 | Argon (Orchestrator) | [x] Complete | Step 7 security, consent, CSP, rate-limit, and voiceprint review |
@@ -26,3 +26,14 @@ Last update: 15/11/2026 (14:29 Asia/Kuala_Lumpur).
 - [x] Run Section 15 checks, Lighthouse audits, CSP model load, and synthetic two-voice smoke test.
 - [x] Complete Argon Step 7 security review before enabling GitHub Pages (`08cb561`).
 - [x] Enable GitHub Pages (step 10.6) and verify live HTTPS URLs.
+
+## Car Demo (Branch `feat/proton-gen2`, 18/11/2026)
+
+| Phase | Status | Scope |
+|---|---|---|
+| Car 1 | [x] Complete | Car SVG (side and top-down views), tokens, page layout, door removal |
+| Car 2 | [x] Complete | `src/car.js` and tests, door files removed |
+| Car 3 | [x] Complete | Mode A window vocabulary, Mode B schema with target, voice wiring |
+| Car 4 | [x] Complete | Child alert, countdown, chime, banner, tests with a fake clock |
+| Car 5 | [x] Complete | Keyfob panel and kick sensor tests |
+| Car 6 | [x] Complete | Guide rewrite, docs, audit, boards, Lighthouse, repo scan |

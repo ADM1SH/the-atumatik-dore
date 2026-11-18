@@ -49,4 +49,15 @@ Last update: 18/11/2026.
 
 - Mode B wraps spoken transcripts inside `<untrusted_speech>` delimiters and labels the speech as untrusted user data in the user prompt.
 - Hand-written JSON validation rejects non-JSON output, unknown action strings, and overly long reasons.
-- `src/door-fsm.js` enforces all physical door state rules regardless of AI output (`open` fails when `locked`, and `lock` fails when not `CLOSED`).
+- `src/car.js` enforces all car rules regardless of AI output. A window command fails when the engine is off and the keyfob is not carried. `lock` fails while a door is open. A kick on a locked car needs the keyfob.
+- The validator rejects a window action with target `none` and any other action with a window target.
+- The internal `ventilate` action of the child alert is not in the Mode A table or the Mode B action list, so voice and AI cannot call it.
+
+## 6. Car Demo Data and PDPA 2010 (Malaysia)
+
+- The child presence flag, the owner distance, the alert distance, the keyfob state, and the car state live in JavaScript memory only. The page saves none of them.
+- The event log holds only action names and result text in memory. It holds no personal data and no location.
+- Mode B sends the engine state, the lock state, the keyfob carried flag, and the window positions to Groq. It never sends the child flag or the owner distance.
+- The chime is generated with WebAudio. The page loads no audio file and no extra script.
+- The saved Mode B rules key changed to `atumatik_modeb_rules_v2`. The old key `atumatik_modeb_rules` stays in the browser and is not read. No data is deleted.
+- The child alert is a demo. It is not a child safety device. Never leave a child alone in a car.

@@ -56,6 +56,20 @@ Last update: 18/11/2026.
 - Reason: Adam had to repeat enrolment and consent after every reload. Browser storage is per browser profile and per device, which matches the request. Unticking the consent box removes the consent record. "Delete my voiceprint" removes the voiceprint and unfinished vectors but keeps consent, so "Re-record" does not ask for consent again.
 - Limit: Private windows and "clear site data" erase everything. Chrome can deny `persist()`, and it did on a fresh `localhost` profile on 18/11/2026.
 
+### DEC-011: Replace the Sliding Door with a Proton Gen2 CPS Car Demo
+- Date: 18/11/2026
+- Choice: Remove the sliding door simulation. Build a manual Proton Gen2 CPS (5-door hatchback, black body, bronze rims) as two inline SVG views (side and top-down) driven by one shared state. Add voice-controlled windows, a keyfob, a kick sensor for doors, and a simulated child-in-car alert. This supersedes the sliding door scope in earlier entries. Earlier entries stay as history.
+- Reason: Adam asked for the change. The pure module `src/car.js` replaces `src/door-fsm.js`. Only the `{ ok, reason }` result shape and the no-DOM rule carried over.
+- Rules decided: A voice command counts as a response to the child alert when the speaker is verified (or no voiceprint exists) and the command is recognized, even if the car refuses it. After a response, the alert re-arms only when the owner is back within the limit or the lock, engine, or child flag changes. The keyfob carried toggle is not a response. The Mode B rules key is `atumatik_modeb_rules_v2`.
+
+### DEC-012: Car Model Sources, Scale, and Look
+- Date: 18/11/2026
+- Scale: 1 SVG unit is 10 mm in both views. Dimensions of the Gen2 1.6 CPS from encycarpedia.com (page titled CPS, `08-gen-2-1-6-cps-hatch`): length 4,310 mm, width 1,725 mm, height 1,435 mm, wheelbase 2,600 mm, front track 1,475 mm, rear track 1,470 mm, tyre 195/55 R15. Ground clearance 150 mm and rim 15 x 6.5 in come from pages that do not name the CPS and are approximate.
+- Look: pre-facelift silhouette with the rear spoiler. The spoiler appears on pre-facelift cars in the reference photos, so it is not a facelift marker. A black roof cannot show on a black body. The label says "Proton Gen2 CPS (manual)" with no engine or gearbox claim, because no source was cited for them.
+- Measurements from the reference drawing (pixel scan, not copied): the 2007 side drawing is squashed vertically by about 1.10 and tilted about 1 degree. Wheelbase over length matches the spec at 0.603. The 2005 top plan is 16% too long for the 5-door body, so the plan view uses the spec size and takes shape ideas only. The front and rear overhang split (about 877 mm and 828 mm) comes from the drawing.
+- Inferred: the rear shape, the tailgate, the fuel flap (right side only, seen in the Serdang photo), and the whole top view.
+- References (private tracing material, never committed): Wikimedia Commons photos by User:Two hundred percent (CC BY-SA), Vauxford (CC BY-SA 4.0), and Simon Yeo (CC BY 2.0), licences not yet re-checked on the file pages. The blueprint GIFs have an unclear licence. The SVG paths are built by hand from measured points. There is no auto-trace.
+
 ## Synthetic Two-Voice Smoke Test Results
 
 Status: Executed on 15/11/2026 at 14:01 Asia/Kuala_Lumpur in headless Chrome WASM (`Xenova/wavlm-base-plus-sv` quantized `q8`, `512` normalized dimensions).

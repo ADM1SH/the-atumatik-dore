@@ -1,18 +1,18 @@
 # The Atumatik DoRe
 
-Last update: 15/11/2026.
+Last update: 18/11/2026.
 
-The Atumatik DoRe is a browser-based voice-controlled automatic sliding door demo and hardware build guide for a final year project group.
+The Atumatik DoRe is a browser-based Proton Gen2 CPS (manual) car demo and hardware concept guide for a final year project group. The demo has voice-controlled windows, a keyfob, a kick sensor, and a simulated child-in-car alert. No real hardware is controlled. It is not a child safety device.
 Live site: `https://adm1sh.github.io/the-atumatik-dore/`
 
 ## How to Run the Demo (No Coding Required)
 
 1. Open `https://adm1sh.github.io/the-atumatik-dore/` in Google Chrome or Microsoft Edge on desktop or Android.
 2. Allow microphone access when the browser asks.
-3. Click the door control buttons or hold the Talk button (or `Space` key) to control the door with Mode A (fixed words).
-4. Optional: Open Voice Setup, read the PDPA 2010 consent text, and record the five door sentences to test the demo speaker lock.
+3. Click the car control buttons or hold the Talk button (or `Space` key) to control the car with Mode A (fixed words). Example: "close the driver window".
+4. Optional: Open Voice Setup, read the PDPA 2010 consent text, and record the five enrolment sentences to test the demo speaker lock.
 5. Optional: Paste a temporary personal Groq API key from `https://console.groq.com/keys` to test Mode B plain-English rules.
-6. Open the Hardware Guide page to inspect ESP32 and Raspberry Pi wiring, MYR pricing, and sample code.
+6. Open the Hardware Guide page to read how each demo feature maps to real hardware ideas, the safety limits, and the checked parts list.
 
 ## Local Verification (Developers)
 
