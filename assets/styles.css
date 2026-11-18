@@ -248,6 +248,10 @@ p {
   transform: translate(480px, 0) scale(-1, 1);
 }
 
+.is-mirrored .car-right-only {
+  display: none;
+}
+
 .car-ground {
   stroke: var(--car-ground);
   stroke-width: 1;
@@ -263,7 +267,7 @@ p {
 .car-line {
   fill: none;
   stroke: var(--car-line);
-  stroke-width: 0.8;
+  stroke-width: 0.85;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -275,8 +279,12 @@ p {
 .car-panel {
   fill: var(--car-body);
   stroke: var(--car-line);
-  stroke-width: 0.8;
+  stroke-width: 0.85;
   stroke-linejoin: round;
+}
+
+.car-pillar {
+  fill: var(--car-body);
 }
 
 .car-glass {
@@ -285,6 +293,12 @@ p {
 
 .car-cabin {
   fill: var(--car-cabin);
+}
+
+.car-aperture {
+  fill: var(--car-cabin);
+  stroke: var(--car-line);
+  stroke-width: 0.9;
 }
 
 .car-well {
@@ -308,12 +322,32 @@ p {
   fill: var(--car-rim);
 }
 
+.car-disc {
+  fill: var(--car-cabin);
+}
+
 .car-hole {
   fill: var(--car-tyre);
 }
 
 .car-lamp {
   fill: var(--car-lamp);
+}
+
+.car-lamp-inner {
+  fill: var(--surface);
+}
+
+.car-headlamp {
+  fill: var(--car-glass);
+  stroke: var(--car-line);
+  stroke-width: 0.85;
+}
+
+.car-grille {
+  fill: var(--car-well);
+  stroke: var(--car-line);
+  stroke-width: 0.85;
 }
 
 .pane-nf,
@@ -333,6 +367,11 @@ p {
   transform: translateY(calc(var(--win-nr) * 46px));
 }
 
+.door-cut {
+  stroke: var(--car-line);
+  stroke-width: 1;
+}
+
 .door-cut-nf {
   opacity: var(--door-nf);
 }
@@ -342,13 +381,13 @@ p {
 }
 
 .side-tailgate {
-  transform: rotate(calc(var(--tailgate) * 40deg));
-  transform-origin: 100px 43px;
+  transform: rotate(calc(var(--tailgate) * 48deg));
+  transform-origin: 96px 42px;
 }
 
 .top-tailgate {
-  transform: scaleX(calc(1 - var(--tailgate) * 0.5));
-  transform-origin: 120px 185px;
+  transform: scaleX(calc(1 - var(--tailgate) * 0.55));
+  transform-origin: 118px 185px;
 }
 
 .top-door-fr { transform: rotate(calc(var(--door-fr) * -60deg)); transform-origin: 297px 265px; }

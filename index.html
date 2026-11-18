@@ -76,57 +76,98 @@
           <button id="mirror-toggle" type="button" class="toggle-btn" aria-pressed="false">Show left side</button>
         </div>
         <figure class="car-figure">
-          <svg id="car-side" class="car-svg" viewBox="0 0 480 190" role="img" aria-labelledby="car-side-title car-side-desc">
+          <svg id="car-side" class="car-svg" viewBox="0 -26 480 216" role="img" aria-labelledby="car-side-title car-side-desc">
             <title id="car-side-title">Side view of a black Proton Gen2 CPS with bronze rims</title>
-            <desc id="car-side-desc">Schematic drawn at 1 unit per 10 mm. Window panes slide down into the doors, open doors show as dark cut-outs, and the tailgate lifts. The text status and the window meters give the same information in words.</desc>
+            <desc id="car-side-desc">Proton Gen2 CPS profile drawn at 1 unit per 10 mm. Window panes slide down into the doors, open doors show as dark cut-outs, and the tailgate lifts on roof hinges. The text status and the window meters give the same information in words.</desc>
             <defs>
-              <clipPath id="clip-nf"><polygon points="291,86 240,47 192,39.5 190,39.5 190,81.3"/></clipPath>
-              <clipPath id="clip-nr"><polygon points="188,81.2 188,39.5 126,42 118,77.8"/></clipPath>
+              <clipPath id="clip-nf"><path d="M270 83 L268 65.5 C252 51.5 234 43 214 40.2 C204 39.2 196 39 190 39.1 L190 80.7 Z"/></clipPath>
+              <clipPath id="clip-nr"><path d="M186 80.5 L186 39.1 C166 39.3 144 41.2 123 44.5 L117 77.6 Z"/></clipPath>
             </defs>
             <line class="car-ground" x1="0" y1="178" x2="480" y2="178"/>
             <g class="car-flip">
               <g transform="translate(40 0)">
-                <path class="car-well" d="M50 159 A34.5 34.5 0 1 1 115.6 159 Z"/>
-                <path class="car-well" d="M310 159 A34.5 34.5 0 1 1 375.6 159 Z"/>
-                <path class="car-body" d="M14 153.5 Q20 159 30 159 L50 159 A34.5 34.5 0 1 1 115.6 159 L310 159 A34.5 34.5 0 1 1 375.6 159 L416 159 Q428 158 429.5 146 L430.5 135 L429 123 C427.3 121 422.8 114.7 419 111.1 C415.2 107.5 410.3 103.8 406 101.5 C401.7 99.2 397.3 98.6 393 97.4 C388.7 96.2 384.3 95.5 380 94.5 C375.7 93.5 371.3 92.5 367 91.6 C362.7 90.7 358.5 90 354 89.3 C349.5 88.6 344.4 87.7 340 87.2 C335.6 86.7 331.8 86.7 327.5 86.3 C323.2 85.9 318.4 86.4 314 84.7 C309.6 83 305.3 79.1 301 76.3 C296.7 73.5 292.3 70.7 288 67.9 C283.7 65.1 279.3 62 275 59.5 C270.7 57 266.3 55.1 262 53 C257.7 50.9 253.3 49.1 249 47 C244.7 44.9 240.3 41.9 236 40.5 C231.7 39.1 227.3 39 223 38.3 C218.7 37.7 214.3 37.2 210 36.6 C205.7 36 203.7 35 197 34.7 C190.3 34.3 178.8 34.4 170 34.5 C161.2 34.6 152.7 34.7 144 35.4 C135.3 36.2 126.7 37.3 118 39 C109.3 40.7 100.7 43.1 92 45.7 C83.3 48.3 74.7 51.6 66 54.8 C57.3 57.9 48.7 61.4 40 64.6 C31.3 67.8 18.3 72.2 14 73.7 Q4 80 1 98 L0.5 118 L1 136 Q2 148 14 153.5 Z"/>
+                <path class="car-well" d="M50.2 159.5 A34.5 34.5 0 1 1 115.4 159.5 Z"/>
+                <path class="car-well" d="M310.2 159.5 A34.5 34.5 0 1 1 375.4 159.5 Z"/>
+                <path class="car-body" d="M115.4 159.5 C160 160.8 260 160.8 310.2 159.5 A34.5 34.5 0 1 1 375.4 159.5 C392 159 412 157.5 422 154 C429 151 431 143 431 134 C431 124 429 116 424 109 C416 101 396 94.5 366 90.5 C344 87.5 322 85.2 304 83.5 C282 65 256 46.5 226 38.8 C202 34.6 174 34.3 146 35.6 C118 37.4 86 46.8 44 63.2 C26 70.2 14 74.5 8 78.5 C4 82 2 96 1.5 114 C1 130 3.5 144 13 151.5 C21 157 36 159 50.2 159.5 A34.5 34.5 0 1 1 115.4 159.5 Z"/>
 
-                <polygon class="car-cabin" points="291,86 240,47 192,39.5 190,39.5 190,81.3"/>
-                <polygon class="car-cabin" points="188,81.2 188,39.5 126,42 118,77.8"/>
-                <g clip-path="url(#clip-nf)"><polygon class="car-glass pane-nf" points="291,86 240,47 192,39.5 190,39.5 190,81.3"/></g>
-                <g clip-path="url(#clip-nr)"><polygon class="car-glass pane-nr" points="188,81.2 188,39.5 126,42 118,77.8"/></g>
-                <polygon class="car-glass" points="102,76 106,45.5 116,42.5 113,77"/>
-                <polygon class="car-glass" points="392,106 420,106 428,112 424,118 395,116"/>
+                <!-- Stationary greenhouse cavities, panes, and fixed quarter glass -->
+                <path class="car-cabin" d="M270 83 L268 65.5 C252 51.5 234 43 214 40.2 C204 39.2 196 39 190 39.1 L190 80.7 Z"/>
+                <path class="car-cabin" d="M186 80.5 L186 39.1 C166 39.3 144 41.2 123 44.5 L117 77.6 Z"/>
+                <g clip-path="url(#clip-nf)"><path class="car-glass pane-nf" d="M270 83 L268 65.5 C252 51.5 234 43 214 40.2 C204 39.2 196 39 190 39.1 L190 80.7 Z"/></g>
+                <g clip-path="url(#clip-nr)"><path class="car-glass pane-nr" d="M186 80.5 L186 39.1 C166 39.3 144 41.2 123 44.5 L117 77.6 Z"/></g>
+                <path class="car-cabin" d="M293 84 L272 83 L270 66.5 C279 72 287 78 293 84 Z"/>
+                <rect class="car-pillar" x="186" y="38.8" width="4" height="42"/>
+                <path class="car-pillar" d="M123 44.5 L119 45 L113 77.6 L117 77.6 Z"/>
+                <path class="car-glass" d="M119 45 L113 77.6 L98 76.8 C92 76.2 91 66 96 56 C101 48.5 110 45.8 119 45 Z"/>
+                <path class="car-line" d="M293 84 C279 70 255 48 225 40.2 C202 36.2 162 36.5 118 42 C104 44.5 94 50 91 61 C89 70 92 77 99 77.5 L293 84 Z"/>
 
-                <path class="car-line" d="M297 86 L100 77"/>
-                <path class="car-line" d="M130 111.5 L300 111.5"/>
-                <path class="car-line" d="M130 118.3 L300 118.3"/>
-                <path class="car-line" d="M140 147.4 L300 147.4"/>
-                <polygon class="car-line" points="297,84 240,47 190,39.5 190,156 297,156"/>
-                <polygon class="car-line" points="190,39.5 126,41.5 100,78 104,100 118,125 130,142 138,155 190,156"/>
-                <rect class="car-handle" x="198" y="92" width="14" height="3.4" rx="1.7"/>
-                <rect class="car-handle" x="116" y="90" width="14" height="3.4" rx="1.7"/>
-                <ellipse class="car-body" cx="277" cy="83" rx="9" ry="4.5"/>
+                <!-- Stationary front headlamp, lower bumper intake, fog lamp, and creases -->
+                <path class="car-headlamp" d="M387 95 C402 97 417 103 425 113 C414 114.5 400 112 389 106 C385 102 385 98 387 95 Z"/>
+                <circle class="car-cabin" cx="401.5" cy="103" r="3.4"/>
+                <circle class="car-cabin" cx="412.5" cy="107" r="2.6"/>
+                <path class="car-grille" d="M402 135 C409 131 421 131 427 137 C428 144 425 150 416 150 C407 150 400 144 402 135 Z"/>
+                <circle class="car-headlamp" cx="414" cy="141" r="3.8"/>
+                <path class="car-line" d="M376 121 L429 120"/>
+                <path class="car-line" d="M46 144 A38 38 0 0 1 119.5 144"/>
+                <path class="car-line" d="M306 144 A38 38 0 0 1 379.5 144"/>
+                <ellipse class="car-line" cx="305" cy="96" rx="2.6" ry="1.2"/>
 
-                <polygon class="car-cabin door-cut door-cut-nf" points="297,84 240,47 190,39.5 190,156 297,156"/>
-                <polygon class="car-cabin door-cut door-cut-nr" points="190,39.5 126,41.5 100,78 104,100 118,125 130,142 138,155 190,156"/>
+                <!-- Stationary rear quarter bumper crease and wrap-around 3-lens tail lamp -->
+                <path class="car-line" d="M49 115 L2 115"/>
+                <path class="car-lamp" d="M3 94 C14 91 32 92.5 45 99 C39 109 22 114 2.5 114.5 C2 107 2 100 3 94 Z"/>
+                <path class="car-lamp-inner" d="M7 97 C16 95 29 96 39 100 C33 107.5 20 111.5 6 111.5 Z"/>
+                <circle class="car-lamp" cx="12.5" cy="104.5" r="3.3"/>
+                <circle class="car-lamp" cx="21.5" cy="102.5" r="3.2"/>
+                <circle class="car-lamp" cx="30" cy="101.2" r="2.1"/>
 
-                <polygon class="car-cabin" points="100,43 92,45.7 79,50.2 66,54.8 53,59.4 40,64.6 27,69.8 14,73.7 4,80 1,98 0.5,118 1,133 20,132 40,124 62,100 84,70"/>
-                <g class="side-tailgate">
-                  <polygon class="car-body" points="100,43 92,45.7 79,50.2 66,54.8 53,59.4 40,64.6 27,69.8 14,73.7 4,80 1,98 0.5,118 1,133 20,132 40,124 62,100 84,70"/>
-                  <polygon class="car-glass" points="94,47 66,57 40,67 22,75 20,90 42,95 62,90 82,66"/>
-                  <polygon class="car-body" points="10,71 52,57 52,62 14,75"/>
-                  <polygon class="car-lamp" points="6,98 38,102 41,111 5,119"/>
+                <!-- Right-side-only fuel flap and driver door lock cylinder -->
+                <g class="car-right-only">
+                  <rect class="car-line" x="64" y="85" width="16" height="14" rx="2.5"/>
+                  <circle class="car-handle" cx="212" cy="92.2" r="1.1"/>
                 </g>
 
+                <!-- Door shut lines, rubbing strip, handles, and wing mirror -->
+                <path class="car-line" d="M295 84 C297 104 297 129 295 153 L136 153 C128 134 118 118 108 104 C102 95 96 86 90 74 C89 62 93 52 102 45 C118 40 148 39 188.5 39 L188.5 153"/>
+                <path class="car-line" d="M124 113 L292 115 L291 119 L127 117 Z"/>
+                <path class="car-line" d="M137 148 L293 148"/>
+                <rect class="car-line" x="195" y="89" width="19" height="6.5" rx="3.2"/>
+                <rect class="car-handle" x="197" y="90.9" width="14" height="2.6" rx="1.3"/>
+                <rect class="car-line" x="115" y="86.5" width="18" height="6.2" rx="3.1"/>
+                <rect class="car-handle" x="117" y="88.3" width="13.5" height="2.5" rx="1.2"/>
+                <path class="car-panel" d="M272 79 C272 73.5 282 72.5 288 76 C290 78.5 288 83.5 280 84 C274 84 272 81.5 272 79 Z"/>
+
+                <!-- Open door cabin cut-outs -->
+                <path class="car-cabin door-cut door-cut-nf" d="M295 84 C297 104 297 129 295 153 L188.5 153 L188.5 39 C204 39 222 39.5 240 44 C260 51 278 65 295 84 Z"/>
+                <path class="car-cabin door-cut door-cut-nr" d="M188.5 39 L188.5 153 L136 153 C128 134 118 118 108 104 C102 95 96 86 90 74 C89 62 93 52 102 45 C118 40 148 39 188.5 39 Z"/>
+
+                <!-- Boot rim cavity and hinged tailgate with pylon spoiler (never crosses D-glass or tail lamp) -->
+                <path class="car-cabin" d="M96 42 C72 51 38 64 14 74 C9 77 6 82 5 90 L22 86 C48 73 74 58 96 42 Z"/>
+                <g class="side-tailgate">
+                  <path class="car-panel" d="M96 42 C72 51 38 64 14 74 C9 77 6 82 5 90 L16 86 C44 74 72 58 96 42 Z"/>
+                  <path class="car-glass" d="M89 45 C68 53 42 63 22 72 C19 74 20 76 25 75.5 L46 73.5 C64 66 78 55 89 45 Z"/>
+                  <path class="car-panel" d="M54 61 L54 56.5 L59 56 L59 60 Z"/>
+                  <path class="car-panel" d="M7 70 L14 67.5 L15 74 L7 75 Z"/>
+                  <path class="car-panel" d="M5 69.5 C22 63.5 42 58 60 55.5 L61.5 58.8 C44 61.5 24 67 6.5 72.8 Z"/>
+                </g>
+
+                <!-- 5-split-spoke 15-inch bronze alloy wheels -->
                 <g>
                   <circle class="car-tyre" cx="82.8" cy="148.2" r="29.8"/>
+                  <circle class="car-disc" cx="82.8" cy="148.2" r="14.5"/>
                   <circle class="car-rim" cx="82.8" cy="148.2" r="19.05"/>
-                  <g class="car-hole"><circle cx="82.8" cy="136.7" r="3.6"/><circle cx="93.7" cy="144.6" r="3.6"/><circle cx="89.6" cy="157.5" r="3.6"/><circle cx="76" cy="157.5" r="3.6"/><circle cx="71.9" cy="144.6" r="3.6"/><circle cx="82.8" cy="148.2" r="4"/></g>
+                  <path class="car-hole" d="M85.0 141.5 L87.0 132.5 A16.3 16.3 0 0 1 96.5 139.3 L88.5 144.1 A7 7 0 0 0 85.0 141.5 Z M89.8 148.2 L99.1 147.3 A16.3 16.3 0 0 1 95.5 158.5 L88.5 152.3 A7 7 0 0 0 89.8 148.2 Z M85.0 154.9 L88.6 163.4 A16.3 16.3 0 0 1 77.0 163.4 L80.6 154.9 A7 7 0 0 0 85.0 154.9 Z M77.1 152.3 L70.1 158.5 A16.3 16.3 0 0 1 66.5 147.3 L75.8 148.2 A7 7 0 0 0 77.1 152.3 Z M77.1 144.1 L69.1 139.3 A16.3 16.3 0 0 1 78.6 132.5 L80.6 141.5 A7 7 0 0 0 77.1 144.1 Z"/>
+                  <path class="car-hole" d="M82.1 139.8 L81.0 132.0 A16.3 16.3 0 0 1 84.6 132.0 L83.5 139.8 Z M90.6 145.0 L97.6 141.4 A16.3 16.3 0 0 1 98.8 145.0 L91.0 146.2 Z M88.3 154.6 L93.8 160.2 A16.3 16.3 0 0 1 90.8 162.4 L87.2 155.4 Z M78.4 155.4 L74.8 162.4 A16.3 16.3 0 0 1 71.8 160.2 L77.3 154.6 Z M74.6 146.2 L66.8 145.0 A16.3 16.3 0 0 1 68.0 141.4 L75.0 145.0 Z"/>
+                  <circle class="car-hole" cx="82.8" cy="148.2" r="5.6"/>
+                  <circle class="car-rim" cx="82.8" cy="148.2" r="2.2"/>
                 </g>
                 <g>
                   <circle class="car-tyre" cx="342.8" cy="148.2" r="29.8"/>
+                  <circle class="car-disc" cx="342.8" cy="148.2" r="14.5"/>
                   <circle class="car-rim" cx="342.8" cy="148.2" r="19.05"/>
-                  <g class="car-hole"><circle cx="342.8" cy="136.7" r="3.6"/><circle cx="353.7" cy="144.6" r="3.6"/><circle cx="349.6" cy="157.5" r="3.6"/><circle cx="336" cy="157.5" r="3.6"/><circle cx="331.9" cy="144.6" r="3.6"/><circle cx="342.8" cy="148.2" r="4"/></g>
+                  <path class="car-hole" d="M345.0 141.5 L347.0 132.5 A16.3 16.3 0 0 1 356.5 139.3 L348.5 144.1 A7 7 0 0 0 345.0 141.5 Z M349.8 148.2 L359.1 147.3 A16.3 16.3 0 0 1 355.5 158.5 L348.5 152.3 A7 7 0 0 0 349.8 148.2 Z M345.0 154.9 L348.6 163.4 A16.3 16.3 0 0 1 337.0 163.4 L340.6 154.9 A7 7 0 0 0 345.0 154.9 Z M337.1 152.3 L330.1 158.5 A16.3 16.3 0 0 1 326.5 147.3 L335.8 148.2 A7 7 0 0 0 337.1 152.3 Z M337.1 144.1 L329.1 139.3 A16.3 16.3 0 0 1 338.6 132.5 L340.6 141.5 A7 7 0 0 0 337.1 144.1 Z"/>
+                  <path class="car-hole" d="M342.1 139.8 L341.0 132.0 A16.3 16.3 0 0 1 344.6 132.0 L343.5 139.8 Z M350.6 145.0 L357.6 141.4 A16.3 16.3 0 0 1 358.8 145.0 L351.0 146.2 Z M348.3 154.6 L353.8 160.2 A16.3 16.3 0 0 1 350.8 162.4 L347.2 155.4 Z M338.4 155.4 L334.8 162.4 A16.3 16.3 0 0 1 331.8 160.2 L337.3 154.6 Z M334.6 146.2 L326.8 145.0 A16.3 16.3 0 0 1 328.0 141.4 L335.0 145.0 Z"/>
+                  <circle class="car-hole" cx="342.8" cy="148.2" r="5.6"/>
+                  <circle class="car-rim" cx="342.8" cy="148.2" r="2.2"/>
                 </g>
               </g>
             </g>
@@ -138,31 +179,68 @@
         <div class="car-figure car-top-wrap">
           <svg id="car-top" class="car-svg" viewBox="0 0 480 370" role="img" aria-labelledby="car-top-title car-top-desc">
             <title id="car-top-title">Top-down view of a black Proton Gen2 CPS with bronze rims</title>
-            <desc id="car-top-desc">Schematic drawn at 1 unit per 10 mm, front at right. The four doors swing out and the tailgate lifts. Dashed outlines show the wheels hidden under the body. The text status in words gives the same information.</desc>
+            <desc id="car-top-desc">Plan view drawn at 1 unit per 10 mm, front at right. The four doors swing out and the tailgate lifts. Dashed outlines show the wheels hidden under the body. The text status in words gives the same information.</desc>
             <g transform="translate(40 0)">
-              <path class="car-body" d="M0 130 C1 128.2 2.7 122.7 6 119 C9.3 115.3 13.5 110.9 20 108 C26.5 105.1 34.7 103 45 101.5 C55.3 100 67.8 99.5 82 99 C96.2 98.5 110.3 98.8 130 98.8 C149.7 98.7 176.7 98.6 200 98.8 C223.3 98.9 248.3 99 270 99.5 C291.7 100 311.7 100.3 330 101.5 C348.3 102.8 366.7 104.4 380 107 C393.3 109.6 402.3 112.7 410 117 C417.7 121.3 422.5 126.7 426 133 C429.5 139.3 430.2 151.3 431 155 L431 215 C430.2 218.7 429.5 230.7 426 237 C422.5 243.3 417.7 248.7 410 253 C402.3 257.3 393.3 260.4 380 263 C366.7 265.6 348.3 267.3 330 268.5 C311.7 269.8 291.7 270 270 270.5 C248.3 271 223.3 271.1 200 271.3 C176.7 271.4 149.7 271.3 130 271.3 C110.3 271.2 96.2 271.5 82 271 C67.8 270.5 55.3 270 45 268.5 C34.7 267 26.5 264.9 20 262 C13.5 259.1 9.3 254.7 6 251 C2.7 247.3 1 241.8 0 240 Z"/>
+              <!-- Plan body silhouette fitted to 431 x 172.5 spec -->
+              <path class="car-body" d="M0 150 C0 132 5 119 16 112 C30 104 54 100 84 98.8 C126 98.8 184 101 242 101 C286 101 324 100 352 101.5 C382 103 406 110 420 124 C428 133 431 148 431 168 L431 202 C431 222 428 237 420 246 C406 260 382 267 352 268.5 C324 270 286 269 242 269 C184 269 126 271.2 84 271.2 C54 270 30 266 16 258 C5 251 0 238 0 220 Z"/>
 
-              <polygon class="car-glass" points="301,119 236,128 236,242 301,251"/>
-              <polygon class="car-panel" points="120,128 236,128 236,242 120,242"/>
+              <!-- Bonnet V-creases, nose grille, headlamps, and rear lamps -->
+              <path class="car-line" d="M304 120 C342 130 386 146 426 164"/>
+              <path class="car-line" d="M304 250 C342 240 386 224 426 206"/>
+              <path class="car-grille" d="M429 167 C424 176 424 194 429 203 L430.5 198 C427 190 427 180 430.5 172 Z"/>
+              <path class="car-headlamp" d="M424 134 C414 118 396 109 384 111 C392 120 408 130 424 134 Z"/>
+              <path class="car-headlamp" d="M424 236 C414 252 396 261 384 259 C392 250 408 240 424 236 Z"/>
+              <path class="car-lamp" d="M5 130 C12 117 26 111 40 112 C32 120 18 127 5 130 Z"/>
+              <path class="car-lamp" d="M5 240 C12 253 26 259 40 258 C32 250 18 243 5 240 Z"/>
 
-              <rect class="car-cabin" x="190" y="259" width="107" height="11"/>
-              <rect class="car-cabin" x="118" y="259" width="72" height="11"/>
-              <rect class="car-cabin" x="190" y="100" width="107" height="11"/>
-              <rect class="car-cabin" x="118" y="100" width="72" height="11"/>
-              <rect class="car-panel top-door top-door-fr" x="190" y="259" width="107" height="11"/>
-              <rect class="car-panel top-door top-door-rr" x="118" y="259" width="72" height="11"/>
-              <rect class="car-panel top-door top-door-fl" x="190" y="100" width="107" height="11"/>
-              <rect class="car-panel top-door top-door-rl" x="118" y="100" width="72" height="11"/>
-              <ellipse class="car-panel" cx="285" cy="96" rx="8" ry="4"/>
-              <ellipse class="car-panel" cx="285" cy="274" rx="8" ry="4"/>
+              <!-- Windscreen, wipers, and roof panel -->
+              <path class="car-glass" d="M304 120 C314 150 314 220 304 250 L242 238 C248 210 248 160 242 132 Z"/>
+              <path class="car-line" d="M304 134 L309 178 M304 192 L309 236"/>
+              <path class="car-panel" d="M242 132 C248 160 248 210 242 238 L118 235 C121 208 121 162 118 135 Z"/>
+              <path class="car-line" d="M241 138 L119 141 M241 232 L119 229"/>
 
-              <path class="car-cabin" d="M120 131 L12 133 Q2 140 0 150 L0 220 Q2 230 12 237 L120 239 Z"/>
-              <g class="top-tailgate">
-                <path class="car-panel" d="M120 131 L12 133 Q2 140 0 150 L0 220 Q2 230 12 237 L120 239 Z"/>
-                <polygon class="car-glass" points="112,137 40,146 40,224 112,233"/>
-                <rect class="car-panel" x="24" y="139" width="12" height="92"/>
+              <!-- Door cabin sill apertures (exposed when doors open) -->
+              <path class="car-aperture" d="M190 240 L297 248 L297 268 L190 268 Z"/>
+              <path class="car-aperture" d="M104 238 L190 240 L190 268 L118 268 Z"/>
+              <path class="car-aperture" d="M190 130 L297 122 L297 102 L190 102 Z"/>
+              <path class="car-aperture" d="M104 132 L190 130 L190 102 L118 102 Z"/>
+
+              <!-- Sculpted swinging door panels with glass strip, mirror (front), and handles -->
+              <g class="top-door top-door-fr">
+                <path class="car-panel" d="M190 240 L297 248 L297 268 C264 269 226 269 190 268 Z"/>
+                <path class="car-glass" d="M192 243 L294 250 L294 260 L192 258 Z"/>
+                <rect class="car-handle" x="197" y="264" width="14" height="3" rx="1.5"/>
+                <path class="car-panel" d="M289 266 L289 275 C289 282 280 284 277 279 C275 275 280 270 289 266 Z"/>
+              </g>
+              <g class="top-door top-door-rr">
+                <path class="car-panel" d="M106 238 L190 240 L190 268 C164 269 138 269 116 268 Z"/>
+                <path class="car-glass" d="M110 241 L188 243 L188 258 L120 255 Z"/>
+                <rect class="car-handle" x="121" y="264" width="14" height="3" rx="1.5"/>
+              </g>
+              <g class="top-door top-door-fl">
+                <path class="car-panel" d="M190 130 L297 122 L297 102 C264 101 226 101 190 102 Z"/>
+                <path class="car-glass" d="M192 127 L294 120 L294 110 L192 112 Z"/>
+                <rect class="car-handle" x="197" y="103" width="14" height="3" rx="1.5"/>
+                <path class="car-panel" d="M289 104 L289 95 C289 88 280 86 277 91 C275 95 280 100 289 104 Z"/>
+              </g>
+              <g class="top-door top-door-rl">
+                <path class="car-panel" d="M106 132 L190 130 L190 102 C164 101 138 101 116 102 Z"/>
+                <path class="car-glass" d="M110 129 L188 127 L188 112 L120 115 Z"/>
+                <rect class="car-handle" x="121" y="103" width="14" height="3" rx="1.5"/>
               </g>
 
+              <!-- Boot compartment aperture and hinged tailgate with tapered rear glass and spoiler -->
+              <path class="car-aperture" d="M118 135 L26 138 C12 141 6 154 6 185 C6 216 12 229 26 232 L118 235 Z"/>
+              <g class="top-tailgate">
+                <path class="car-panel" d="M118 135 L22 137 C10 140 4 154 4 185 C4 216 10 230 22 233 L118 235 Z"/>
+                <path class="car-glass" d="M112 139 L36 147 C32 162 32 208 36 223 L112 231 Z"/>
+                <path class="car-line" d="M35 185 L58 176"/>
+                <rect class="car-panel" x="16" y="146" width="8" height="8"/>
+                <rect class="car-panel" x="16" y="216" width="8" height="8"/>
+                <path class="car-panel" d="M20 132 C14 152 12 218 20 238 L11 236 C5 216 5 154 11 134 Z"/>
+              </g>
+
+              <!-- Dashed hidden wheels with bronze rim strip -->
               <rect class="car-tyre-hidden" x="53" y="101.75" width="59.6" height="19.5" rx="6"/>
               <rect class="car-tyre-hidden" x="53" y="248.75" width="59.6" height="19.5" rx="6"/>
               <rect class="car-tyre-hidden" x="313" y="101.5" width="59.6" height="19.5" rx="6"/>
