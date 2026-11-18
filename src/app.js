@@ -1,4 +1,6 @@
-import { createDoorFSM, DOOR_STATES, DOOR_ACTIONS } from "./door-fsm.js";
+import { createCar, voiceAction } from "./car.js";
+import { createChildAlert } from "./child-alert.js";
+import { createChime } from "./chime.js";
 import { matchModeACommand } from "./mode-a.js";
 import {
   DEFAULT_MODE_B_RULES,
@@ -32,7 +34,7 @@ import {
 } from "./audio.js";
 
 const STORAGE_KEY_GROQ = "atumatik_groq_key";
-const STORAGE_KEY_RULES = "atumatik_modeb_rules";
+const STORAGE_KEY_RULES = "atumatik_modeb_rules_v2";
 const STORAGE_KEY_THEME = "atumatik_theme";
 
 const klTimeFormatter = new Intl.DateTimeFormat("en-GB", {
@@ -75,16 +77,21 @@ function initThemeToggle() {
 initThemeToggle();
 
 // Only initialize demo logic on index.html
-if (document.getElementById("door-stage")) {
+if (document.getElementById("car-model")) {
   initDemoPage();
 }
 
 function initDemoPage() {
-  const doorStage = document.getElementById("door-stage");
-  const doorStateText = document.getElementById("door-state-text");
-  const doorLockBadge = document.getElementById("door-lock-badge");
-  const doorLockBar = document.getElementById("door-lock-bar");
-  const doorMessageEl = document.getElementById("door-feedback");
+  const carSide = document.getElementById("car-side");
+  const carTop = document.getElementById("car-top");
+  const carStateText = document.getElementById("car-state-text");
+  const carLockBadge = document.getElementById("car-lock-badge");
+  const carFeedback = document.getElementById("car-feedback");
+  const mirrorToggle = document.getElementById("mirror-toggle");
+  const sideViewLabel = document.getElementById("side-view-label");
+  const engineToggle = document.getElementById("engine-toggle");
+  const lockToggle = document.getElementById("lock-toggle");
+  const keyfobToggle = document.getElementById("keyfob-carried");
 
   const browserBanner = document.getElementById("browser-banner");
   const localSpeechStatus = document.getElementById("local-speech-status");
@@ -125,38 +132,57 @@ function initDemoPage() {
   let activeTalkSession = null;
   let enrolmentEmbeddings = loadEnrolmentProgress();
 
-  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const fsm = createDoorFSM({
-    reducedMotion: reducedMotionQuery.matches,
-    onChange(snapshot) {
-      renderDoor(snapshot);
+  const car = createCar({
+    onChange: (snapshot) => {
+      renderCar(snapshot);
+      childAlert.notifyCar(snapshot);
     }
   });
+  const DOOR_NAMES = { fl: "front left", fr: "front right", rl: "rear left", rr: "rear right", tg: "tailgate" };
+  let carSnapshot = car.getSnapshot();
+  let mirrored = false;
 
-  reducedMotionQuery.addEventListener("change", (event) => {
-    fsm.setReducedMotion(event.matches);
-  });
-
-  function renderDoor(snapshot) {
-    doorStage.setAttribute("data-state", snapshot.state);
-    doorStateText.textContent = snapshot.locked
-      ? `${snapshot.state} (LOCKED)`
-      : snapshot.state;
-
-    if (snapshot.locked) {
-      doorLockBadge.textContent = "Locked";
-      doorLockBadge.className = "status-badge status-badge-danger";
-      doorLockBar.hidden = false;
-    } else {
-      doorLockBadge.textContent = "Unlocked";
-      doorLockBadge.className = "status-badge status-badge-ok";
-      doorLockBar.hidden = true;
+  function renderCar(snapshot) {
+    carSnapshot = snapshot;
+    const near = mirrored ? { f: "fl", r: "rl" } : { f: "fr", r: "rr" };
+    for (const key of ["fl", "fr", "rl", "rr"]) {
+      carTop.style.setProperty(`--door-${key}`, snapshot.doors[key] ? "1" : "0");
+      document.getElementById(`meter-${key}`).value = snapshot.windows[key];
+      document.getElementById(`meter-${key}-text`).textContent = `${snapshot.windows[key]}%`;
     }
+    carTop.style.setProperty("--tailgate", snapshot.doors.tg ? "1" : "0");
+    carSide.style.setProperty("--tailgate", snapshot.doors.tg ? "1" : "0");
+    carSide.style.setProperty("--win-nf", String(snapshot.windows[near.f] / 100));
+    carSide.style.setProperty("--win-nr", String(snapshot.windows[near.r] / 100));
+    carSide.style.setProperty("--door-nf", snapshot.doors[near.f] ? "1" : "0");
+    carSide.style.setProperty("--door-nr", snapshot.doors[near.r] ? "1" : "0");
 
-    if (snapshot.lastResult) {
-      doorMessageEl.textContent = snapshot.lastResult;
-    }
+    const openDoors = Object.keys(DOOR_NAMES).filter((key) => snapshot.doors[key]).map((key) => DOOR_NAMES[key]);
+    carStateText.textContent = [
+      snapshot.engine ? "Engine on." : "Engine off.",
+      snapshot.locked ? "Locked." : "Unlocked.",
+      openDoors.length ? `Open: ${openDoors.join(", ")}.` : "All doors closed."
+    ].join(" ");
+    carLockBadge.textContent = snapshot.locked ? "Locked" : "Unlocked";
+    carLockBadge.className = snapshot.locked ? "status-badge status-badge-danger" : "status-badge status-badge-ok";
+    engineToggle.textContent = snapshot.engine ? "Engine: on" : "Engine: off";
+    engineToggle.setAttribute("aria-pressed", String(snapshot.engine));
+    lockToggle.textContent = snapshot.locked ? "Car lock: locked" : "Car lock: unlocked";
+    lockToggle.setAttribute("aria-pressed", String(snapshot.locked));
+    keyfobToggle.textContent = snapshot.keyfobCarried ? "Keyfob carried: on" : "Keyfob carried: off";
+    keyfobToggle.setAttribute("aria-pressed", String(snapshot.keyfobCarried));
   }
+
+  mirrorToggle.addEventListener("click", () => {
+    mirrored = !mirrored;
+    carSide.classList.toggle("is-mirrored", mirrored);
+    mirrorToggle.setAttribute("aria-pressed", String(mirrored));
+    mirrorToggle.textContent = mirrored ? "Show right side" : "Show left side";
+    sideViewLabel.textContent = mirrored
+      ? "Showing the left (passenger) side."
+      : "Showing the right (driver) side. Malaysia is right-hand drive.";
+    renderCar(carSnapshot);
+  });
 
   function addLogEntry({ mode, heard, speakerText, rejected = false, action, result }) {
     const entry = {
@@ -218,21 +244,142 @@ function initDemoPage() {
     localSpeechStatus.textContent = info.detail;
   });
 
-  // Manual door buttons
-  document.querySelectorAll("[data-door-action]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const action = btn.getAttribute("data-door-action");
-      const res = fsm.dispatch(action);
-      doorMessageEl.textContent = res.reason;
-      addLogEntry({
-        mode: "Manual",
-        heard: "(button)",
-        speakerText: "Manual button",
-        rejected: false,
-        action,
-        result: res.reason
-      });
+  // Manual car controls and kick sensor
+  function runManual(mode, label, action) {
+    const res = car.dispatch(action);
+    carFeedback.textContent = res.reason;
+    addLogEntry({
+      mode,
+      heard: "(button)",
+      speakerText: mode === "Kick" ? "Kick sensor" : mode === "Keyfob" ? "Keyfob" : "Manual button",
+      rejected: false,
+      action: label,
+      result: res.reason
     });
+  }
+
+  engineToggle.addEventListener("click", () => {
+    runManual("Manual", "engine", { type: "engine", on: !car.getSnapshot().engine });
+  });
+  lockToggle.addEventListener("click", () => {
+    runManual("Manual", "lock", { type: car.getSnapshot().locked ? "unlock" : "lock" });
+  });
+  document.querySelectorAll("[data-win]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-win");
+      const position = Number(btn.getAttribute("data-pos"));
+      runManual("Manual", `window ${target} ${position}`, { type: "window", target, position });
+    });
+  });
+  document.querySelectorAll("[data-door-close]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const door = btn.getAttribute("data-door-close");
+      runManual("Manual", `close ${door}`, { type: "closeDoor", door });
+    });
+  });
+  document.querySelectorAll("[data-kick]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const door = btn.getAttribute("data-kick");
+      runManual("Kick", `kick ${door}`, { type: "kick", door });
+    });
+  });
+
+  // Keyfob (simulated). Any keyfob button also answers a child alert.
+  keyfobToggle.addEventListener("click", () => {
+    runManual("Keyfob", "keyfob carried", { type: "keyfobCarried", on: !car.getSnapshot().keyfobCarried });
+  });
+  document.querySelectorAll("[data-keyfob]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const button = btn.getAttribute("data-keyfob");
+      runManual("Keyfob", `fob ${button}`, { type: "keyfob", button });
+      childAlert.respond({ source: "keyfob" });
+    });
+  });
+
+  // Child sensor (simulated, in memory only) and chime
+  const chime = createChime();
+  const alertBanner = document.getElementById("alert-banner");
+  const alertBannerText = document.getElementById("alert-banner-text");
+  const alertCountdown = document.getElementById("alert-countdown");
+  const alertPanelStatus = document.getElementById("alert-panel-status");
+  const soundToggle = document.getElementById("sound-toggle");
+  const soundStatus = document.getElementById("sound-status");
+  const childPresentInput = document.getElementById("child-present");
+  const ownerDistanceInput = document.getElementById("owner-distance");
+  const ownerDistanceText = document.getElementById("owner-distance-text");
+  const alertLimitInput = document.getElementById("alert-limit");
+  const alertLimitText = document.getElementById("alert-limit-text");
+  const alertAckBtn = document.getElementById("alert-ack");
+
+  const ALERT_RESULT = {
+    started: "Alert started, 60 s countdown",
+    ventilating: "Countdown ended, windows moved to 50%, chime continues"
+  };
+
+  function renderAlert(state, event) {
+    const active = state.phase !== "idle";
+    if (state.phase === "countdown") {
+      alertCountdown.textContent = `Windows open to 50% in ${Math.ceil(state.remainingMs / 1000)} s.`;
+    } else if (state.phase === "ventilating") {
+      alertCountdown.textContent = "Ventilating. Windows moved to 50%. Chime on until a response.";
+    } else {
+      alertCountdown.textContent = "No alert.";
+    }
+    alertPanelStatus.textContent = alertCountdown.textContent;
+    if (event === "tick") {
+      return;
+    }
+    if (state.phase === "countdown") {
+      alertBannerText.textContent = "Child alert (simulated). The owner moved away from a locked car. Windows open to 50% when the countdown ends. Answer to stop it.";
+    } else if (state.phase === "ventilating") {
+      alertBannerText.textContent = "Child alert (simulated). Windows moved to 50%. Answer to stop the chime.";
+    }
+    alertBanner.hidden = !active;
+    if (active) {
+      chime.start();
+    } else {
+      chime.stop();
+    }
+    soundStatus.textContent = chime.status();
+    addLogEntry({
+      mode: "Sensor",
+      heard: "(sensor)",
+      speakerText: "Simulated sensor",
+      rejected: false,
+      action: event,
+      result: ALERT_RESULT[event] || event
+    });
+  }
+
+  const childAlert = createChildAlert({ car, onChange: renderAlert });
+  soundStatus.textContent = chime.status();
+  for (const eventName of ["pointerdown", "keydown"]) {
+    document.addEventListener(eventName, () => {
+      chime.unlock();
+      soundStatus.textContent = chime.status();
+    }, { once: true });
+  }
+  document.addEventListener("visibilitychange", () => childAlert.tick());
+
+  childPresentInput.addEventListener("change", () => childAlert.setChildPresent(childPresentInput.checked));
+  ownerDistanceInput.addEventListener("input", () => {
+    ownerDistanceText.textContent = `${ownerDistanceInput.value} m`;
+    childAlert.setOwnerDistance(Number(ownerDistanceInput.value));
+  });
+  alertLimitInput.addEventListener("input", () => {
+    alertLimitText.textContent = `${alertLimitInput.value} m`;
+    childAlert.setAlertLimit(Number(alertLimitInput.value));
+  });
+  alertAckBtn.addEventListener("click", () => {
+    carFeedback.textContent = childAlert.respond({ source: "ack" }).reason;
+  });
+  let soundOn = true;
+  soundToggle.addEventListener("click", () => {
+    soundOn = !soundOn;
+    chime.setEnabled(soundOn);
+    soundToggle.textContent = soundOn ? "Sound: on" : "Sound: off";
+    soundToggle.setAttribute("aria-pressed", String(soundOn));
+    soundStatus.textContent = chime.status();
   });
 
   // Mode toggle
@@ -346,7 +493,7 @@ function initDemoPage() {
       const doneCount = enrolmentEmbeddings.filter(Boolean).length;
       voiceprintStatus.textContent = doneCount > 0
         ? `Enrolment progress: ${doneCount} of ${ENROLMENT_SENTENCES.length} sentences captured.`
-        : "No voiceprint enrolled. Mode A and manual door controls work without the model.";
+        : "No voiceprint enrolled. Mode A and manual car controls work without the model.";
       deleteVoiceprintBtn.disabled = true;
     }
   }
@@ -576,7 +723,7 @@ function initDemoPage() {
         const threshold = loadThreshold();
         if (score < threshold) {
           const rejectText = `Rejected (score ${score.toFixed(2)} < ${threshold.toFixed(2)})`;
-          talkStatus.textContent = `Speaker rejected (${score.toFixed(2)}). Door unchanged.`;
+          talkStatus.textContent = `Speaker rejected (${score.toFixed(2)}). Car unchanged.`;
           talkStatus.className = "banner banner-danger";
           addLogEntry({
             mode: activeMode === "B" ? "Mode B" : "Mode A",
@@ -595,6 +742,9 @@ function initDemoPage() {
         return;
       }
     }
+
+    // Rejected speakers returned above. With no voiceprint, any recognized command counts.
+    const ownerVerified = true;
 
     // Step 3: Route recognized transcript to active mode
     const transcript = captured.transcript;
@@ -628,8 +778,9 @@ function initDemoPage() {
         });
         return;
       }
-      const fsmRes = fsm.dispatch(match.action);
-      talkStatus.textContent = `Mode A: ${match.action} -> ${fsmRes.reason}`;
+      childAlert.respond({ source: "voice", ownerVerified });
+      const fsmRes = car.dispatch(voiceAction(match.action, match.target));
+      talkStatus.textContent = `Mode A: ${match.phrase} -> ${fsmRes.reason}`;
       talkStatus.className = fsmRes.ok ? "banner banner-ok" : "banner banner-warn";
       addLogEntry({
         mode: "Mode A",
@@ -664,13 +815,11 @@ function initDemoPage() {
     talkStatus.className = "banner banner-ok";
 
     try {
-      const snap = fsm.getSnapshot();
       const aiRes = await callGroqModeB({
         apiKey,
         model: activeGroqModel,
         rules: rulesInput.value,
-        doorState: snap.state,
-        locked: snap.locked,
+        car: car.getSnapshot(),
         transcript
       });
 
@@ -702,7 +851,8 @@ function initDemoPage() {
         return;
       }
 
-      const fsmRes = fsm.dispatch(aiRes.action);
+      childAlert.respond({ source: "voice", ownerVerified });
+      const fsmRes = car.dispatch(voiceAction(aiRes.action, aiRes.target));
       const finalMsg = fsmRes.ok ? `${aiRes.reason} (${fsmRes.reason})` : fsmRes.reason;
       talkStatus.textContent = `Mode B (${aiRes.action}): ${finalMsg}`;
       talkStatus.className = fsmRes.ok ? "banner banner-ok" : "banner banner-warn";
@@ -766,7 +916,7 @@ function initDemoPage() {
     renderLog();
   });
 
-  renderDoor(fsm.getSnapshot());
+  renderCar(car.getSnapshot());
   renderEnrolmentSentences();
   refreshVoiceprintUI();
   renderLog();

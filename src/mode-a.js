@@ -1,24 +1,51 @@
 /**
  * Mode A: Coded whole-word command matcher (no LLM or API call).
+ * One command per sentence. Anything unclear is "Not understood".
  */
 
-export const MODE_A_COMMANDS = Object.freeze([
-  { action: "hold", words: ["stay open", "keep open", "hold"] },
-  { action: "release", words: ["let go", "release", "resume"] },
-  { action: "open", words: ["open up", "open"] },
-  { action: "close", words: ["close", "shut"] },
+const NOT_UNDERSTOOD = Object.freeze({
+  matched: false,
+  action: "none",
+  target: "none",
+  phrase: null,
+  reason: "Not understood"
+});
+
+const WINDOW_TARGETS = Object.freeze([
+  { target: "fr", words: ["front right", "driver"] },
+  { target: "fl", words: ["front left", "passenger"] },
+  { target: "rl", words: ["rear left"] },
+  { target: "rr", words: ["rear right"] },
+  { target: "all", words: ["all"] }
+]);
+
+const WINDOW_VERBS = Object.freeze([
+  { action: "half", words: ["half way", "halfway", "half"] },
+  { action: "open", words: ["open"] },
+  { action: "close", words: ["close", "shut"] }
+]);
+
+const CAR_WORDS = Object.freeze([
   { action: "unlock", words: ["unlock"] },
   { action: "lock", words: ["lock"] }
 ]);
 
-const COMPILED_PATTERNS = MODE_A_COMMANDS.flatMap(({ action, words }) =>
-  words.map((phrase) => ({
-    action,
-    phrase,
-    length: phrase.length,
-    regex: new RegExp(`\\b${phrase.replace(/\s+/g, "\\s+")}\\b`, "i")
-  }))
-).sort((a, b) => b.length - a.length);
+function wordRegex(phrase) {
+  return new RegExp(`\\b${phrase.replace(/\s+/g, "\\s+")}\\b`, "i");
+}
+
+function findAll(table, key, normalized) {
+  const found = [];
+  for (const entry of table) {
+    for (const phrase of entry.words) {
+      if (wordRegex(phrase).test(normalized)) {
+        found.push({ key: entry[key], phrase });
+        break;
+      }
+    }
+  }
+  return found;
+}
 
 export function normalizeCommandText(input) {
   if (typeof input !== "string") {
@@ -34,19 +61,40 @@ export function normalizeCommandText(input) {
 export function matchModeACommand(transcript) {
   const normalized = normalizeCommandText(transcript);
   if (!normalized) {
-    return { matched: false, action: "none", phrase: null, reason: "Not understood" };
+    return NOT_UNDERSTOOD;
   }
 
-  for (const entry of COMPILED_PATTERNS) {
-    if (entry.regex.test(normalized)) {
-      return {
-        matched: true,
-        action: entry.action,
-        phrase: entry.phrase,
-        reason: `Matched "${entry.phrase}"`
-      };
-    }
+  const carWords = findAll(CAR_WORDS, "action", normalized);
+  let verbs = findAll(WINDOW_VERBS, "action", normalized);
+  // "open halfway" and "half open" mean half. "close halfway" stays ambiguous.
+  if (verbs.some((v) => v.key === "half")) {
+    verbs = verbs.filter((v) => v.key !== "open");
   }
 
-  return { matched: false, action: "none", phrase: null, reason: "Not understood" };
+  if (carWords.length + (verbs.length ? 1 : 0) !== 1 || verbs.length > 1) {
+    return NOT_UNDERSTOOD;
+  }
+
+  if (carWords.length === 1) {
+    return {
+      matched: true,
+      action: carWords[0].key,
+      target: "none",
+      phrase: carWords[0].phrase,
+      reason: `Matched "${carWords[0].phrase}"`
+    };
+  }
+
+  const targets = findAll(WINDOW_TARGETS, "target", normalized);
+  if (!wordRegex("windows?").test(normalized) || targets.length !== 1) {
+    return NOT_UNDERSTOOD;
+  }
+
+  return {
+    matched: true,
+    action: verbs[0].key,
+    target: targets[0].key,
+    phrase: `${verbs[0].phrase} ${targets[0].phrase}`,
+    reason: `Matched "${verbs[0].phrase}" on "${targets[0].phrase}"`
+  };
 }

@@ -37,10 +37,16 @@
   --accent-ok: #166534;
   --accent-ok-bg: #DCFCE7;
 
-  --door-frame: #141414;
-  --door-panel: #D8D5CC;
-  --door-glass: #E6ECF5;
-  --door-interior: #222220;
+  --car-body: #121212;
+  --car-edge: #121212;
+  --car-line: #8A8A84;
+  --car-glass: #8FA3B8;
+  --car-cabin: #3A3F45;
+  --car-well: #050505;
+  --car-tyre: #0A0A0A;
+  --car-rim: #B87333;
+  --car-lamp: #C81E1E;
+  --car-ground: #C8C5BC;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -73,10 +79,16 @@
   --accent-ok: #4ADE80;
   --accent-ok-bg: #0D331B;
 
-  --door-frame: #F4F3EF;
-  --door-panel: #2E2E2A;
-  --door-glass: #1E293B;
-  --door-interior: #070707;
+  --car-body: #121212;
+  --car-edge: #F4F3EF;
+  --car-line: #8A8A84;
+  --car-glass: #8FA3B8;
+  --car-cabin: #3A3F45;
+  --car-well: #050505;
+  --car-tyre: #0A0A0A;
+  --car-rim: #C8864A;
+  --car-lamp: #F87171;
+  --car-ground: #52524C;
 
   --focus-ring: 3px solid #60A5FA;
 }

@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Atumatik DoRe | Voice-Controlled Sliding Door Demo</title>
-  <meta name="description" content="Voice-controlled automatic sliding door demo with coded Mode A, Groq AI Mode B, client-side speaker lock, and event log.">
+  <title>The Atumatik DoRe | Voice-Controlled Car Demo</title>
+  <meta name="description" content="Voice-controlled Proton Gen2 CPS demo with windows, keyfob, kick sensor, child-in-car alert, coded Mode A, Groq Mode B, and speaker lock.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net blob: 'wasm-unsafe-eval'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://us.aws.cdn.hf.co https://api.groq.com; worker-src 'self' blob:;">
   <link rel="canonical" href="https://adm1sh.github.io/the-atumatik-dore/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="The Atumatik DoRe | Voice-Controlled Sliding Door Demo">
-  <meta property="og:description" content="Browser demo of a voice-controlled automatic sliding door with fixed rules, Groq AI rules, and a client-side voiceprint lock.">
+  <meta property="og:title" content="The Atumatik DoRe | Voice-Controlled Car Demo">
+  <meta property="og:description" content="Browser demo of voice-controlled car windows, a keyfob, a kick sensor, and a simulated child-in-car alert. No real hardware is controlled.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://adm1sh.github.io/the-atumatik-dore/">
   <meta property="og:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The Atumatik DoRe | Voice-Controlled Sliding Door Demo">
-  <meta name="twitter:description" content="Voice-controlled automatic sliding door demo with Mode A, Groq Mode B, and speaker lock.">
+  <meta name="twitter:title" content="The Atumatik DoRe | Voice-Controlled Car Demo">
+  <meta name="twitter:description" content="Voice-controlled Proton Gen2 CPS demo with Mode A, Groq Mode B, and speaker lock.">
   <meta name="twitter:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
   <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -44,51 +44,161 @@
   <main id="main-content" class="container">
     <div class="page-title-block">
       <h1>The Atumatik DoRe</h1>
-      <p class="subtitle">Voice-controlled automatic sliding door demo with coded rules, plain-English Groq AI rules, and a browser speaker lock.</p>
+      <p class="subtitle">Voice-controlled Proton Gen2 CPS demo with coded rules, plain-English Groq AI rules, a browser speaker lock, a keyfob, a kick sensor, and a simulated child-in-car alert. No real hardware is controlled.</p>
     </div>
 
     <div id="browser-banner" class="banner banner-danger" role="alert" hidden></div>
 
     <div class="layout-grid">
-      <section class="panel" aria-labelledby="door-heading">
+      <section id="car-model" class="panel" aria-labelledby="car-heading">
         <div class="panel-header">
-          <h2 id="door-heading">1. Sliding Door Simulation</h2>
-          <span id="door-lock-badge" class="status-badge status-badge-ok">Unlocked</span>
+          <h2 id="car-heading">1. Car Model</h2>
+          <span id="car-lock-badge" class="status-badge status-badge-ok">Unlocked</span>
         </div>
 
-        <div id="door-stage" class="door-stage" data-state="CLOSED" aria-hidden="true">
-          <div class="door-interior-label">
-            <span>Entrance Clear</span>
-            <span>Simulated Sensor Active</span>
-          </div>
-          <div class="door-panel door-panel-left">
-            <div class="door-glass"></div>
-          </div>
-          <div class="door-panel door-panel-right">
-            <div class="door-glass"></div>
-          </div>
-          <div id="door-lock-bar" class="door-lock-bar" hidden>LOCKED</div>
-        </div>
+        <p class="mono muted">Proton Gen2 CPS (manual)</p>
+        <p class="safety-line" role="note">Demo only. This is not a child safety device. Never leave a child alone in a car.</p>
+
+        <div id="alert-banner" class="banner banner-danger" role="alert" hidden><span class="alert-icon" aria-hidden="true">!</span> <span id="alert-banner-text"></span></div>
+        <p id="alert-countdown" class="mono" role="timer">No alert.</p>
 
         <div class="status-row">
           <div>
-            <strong>Door State:</strong>
-            <span id="door-state-text" class="mono" aria-live="polite">CLOSED</span>
+            <strong>Car state:</strong>
+            <span id="car-state-text" class="mono" aria-live="polite">Engine off. Unlocked. All doors closed.</span>
           </div>
-          <div id="door-feedback" class="mono muted" aria-live="polite">Ready.</div>
+          <div id="car-feedback" class="mono muted" aria-live="polite">Ready.</div>
         </div>
 
-        <h3>Manual Controls</h3>
-        <div class="button-grid">
-          <button type="button" data-door-action="open">Open</button>
-          <button type="button" data-door-action="close">Close</button>
-          <button type="button" data-door-action="hold">Hold open</button>
-          <button type="button" data-door-action="release">Release</button>
-          <button type="button" data-door-action="lock">Lock</button>
-          <button type="button" data-door-action="unlock">Unlock</button>
-          <button type="button" class="btn-danger" data-door-action="obstacle">Obstacle</button>
+        <h3>Side View</h3>
+        <p id="side-view-label" class="muted">Showing the right (driver) side. Malaysia is right-hand drive.</p>
+        <div class="field-group">
+          <button id="mirror-toggle" type="button" class="toggle-btn" aria-pressed="false">Show left side</button>
         </div>
-        <p class="muted mt-3">Open doors close automatically after 5 seconds unless set to Hold open. Transitions take 2 seconds unless reduced motion is active.</p>
+        <figure class="car-figure">
+          <svg id="car-side" class="car-svg" viewBox="0 0 480 190" role="img" aria-labelledby="car-side-title car-side-desc">
+            <title id="car-side-title">Side view of a black Proton Gen2 CPS with bronze rims</title>
+            <desc id="car-side-desc">Schematic drawn at 1 unit per 10 mm. Window panes slide down into the doors, open doors show as dark cut-outs, and the tailgate lifts. The text status and the window meters give the same information in words.</desc>
+            <defs>
+              <clipPath id="clip-nf"><polygon points="291,86 240,47 192,39.5 190,39.5 190,81.3"/></clipPath>
+              <clipPath id="clip-nr"><polygon points="188,81.2 188,39.5 126,42 118,77.8"/></clipPath>
+            </defs>
+            <line class="car-ground" x1="0" y1="178" x2="480" y2="178"/>
+            <g class="car-flip">
+              <g transform="translate(40 0)">
+                <path class="car-well" d="M50 159 A34.5 34.5 0 1 1 115.6 159 Z"/>
+                <path class="car-well" d="M310 159 A34.5 34.5 0 1 1 375.6 159 Z"/>
+                <path class="car-body" d="M14 153.5 Q20 159 30 159 L50 159 A34.5 34.5 0 1 1 115.6 159 L310 159 A34.5 34.5 0 1 1 375.6 159 L416 159 Q428 158 429.5 146 L430.5 135 L429 123 C427.3 121 422.8 114.7 419 111.1 C415.2 107.5 410.3 103.8 406 101.5 C401.7 99.2 397.3 98.6 393 97.4 C388.7 96.2 384.3 95.5 380 94.5 C375.7 93.5 371.3 92.5 367 91.6 C362.7 90.7 358.5 90 354 89.3 C349.5 88.6 344.4 87.7 340 87.2 C335.6 86.7 331.8 86.7 327.5 86.3 C323.2 85.9 318.4 86.4 314 84.7 C309.6 83 305.3 79.1 301 76.3 C296.7 73.5 292.3 70.7 288 67.9 C283.7 65.1 279.3 62 275 59.5 C270.7 57 266.3 55.1 262 53 C257.7 50.9 253.3 49.1 249 47 C244.7 44.9 240.3 41.9 236 40.5 C231.7 39.1 227.3 39 223 38.3 C218.7 37.7 214.3 37.2 210 36.6 C205.7 36 203.7 35 197 34.7 C190.3 34.3 178.8 34.4 170 34.5 C161.2 34.6 152.7 34.7 144 35.4 C135.3 36.2 126.7 37.3 118 39 C109.3 40.7 100.7 43.1 92 45.7 C83.3 48.3 74.7 51.6 66 54.8 C57.3 57.9 48.7 61.4 40 64.6 C31.3 67.8 18.3 72.2 14 73.7 Q4 80 1 98 L0.5 118 L1 136 Q2 148 14 153.5 Z"/>
+
+                <polygon class="car-cabin" points="291,86 240,47 192,39.5 190,39.5 190,81.3"/>
+                <polygon class="car-cabin" points="188,81.2 188,39.5 126,42 118,77.8"/>
+                <g clip-path="url(#clip-nf)"><polygon class="car-glass pane-nf" points="291,86 240,47 192,39.5 190,39.5 190,81.3"/></g>
+                <g clip-path="url(#clip-nr)"><polygon class="car-glass pane-nr" points="188,81.2 188,39.5 126,42 118,77.8"/></g>
+                <polygon class="car-glass" points="102,76 106,45.5 116,42.5 113,77"/>
+                <polygon class="car-glass" points="392,106 420,106 428,112 424,118 395,116"/>
+
+                <path class="car-line" d="M297 86 L100 77"/>
+                <path class="car-line" d="M130 111.5 L300 111.5"/>
+                <path class="car-line" d="M130 118.3 L300 118.3"/>
+                <path class="car-line" d="M140 147.4 L300 147.4"/>
+                <polygon class="car-line" points="297,84 240,47 190,39.5 190,156 297,156"/>
+                <polygon class="car-line" points="190,39.5 126,41.5 100,78 104,100 118,125 130,142 138,155 190,156"/>
+                <rect class="car-handle" x="198" y="92" width="14" height="3.4" rx="1.7"/>
+                <rect class="car-handle" x="116" y="90" width="14" height="3.4" rx="1.7"/>
+                <ellipse class="car-body" cx="277" cy="83" rx="9" ry="4.5"/>
+
+                <polygon class="car-cabin door-cut door-cut-nf" points="297,84 240,47 190,39.5 190,156 297,156"/>
+                <polygon class="car-cabin door-cut door-cut-nr" points="190,39.5 126,41.5 100,78 104,100 118,125 130,142 138,155 190,156"/>
+
+                <polygon class="car-cabin" points="100,43 92,45.7 79,50.2 66,54.8 53,59.4 40,64.6 27,69.8 14,73.7 4,80 1,98 0.5,118 1,133 20,132 40,124 62,100 84,70"/>
+                <g class="side-tailgate">
+                  <polygon class="car-body" points="100,43 92,45.7 79,50.2 66,54.8 53,59.4 40,64.6 27,69.8 14,73.7 4,80 1,98 0.5,118 1,133 20,132 40,124 62,100 84,70"/>
+                  <polygon class="car-glass" points="94,47 66,57 40,67 22,75 20,90 42,95 62,90 82,66"/>
+                  <polygon class="car-body" points="10,71 52,57 52,62 14,75"/>
+                  <polygon class="car-lamp" points="6,98 38,102 41,111 5,119"/>
+                </g>
+
+                <g>
+                  <circle class="car-tyre" cx="82.8" cy="148.2" r="29.8"/>
+                  <circle class="car-rim" cx="82.8" cy="148.2" r="19.05"/>
+                  <g class="car-hole"><circle cx="82.8" cy="136.7" r="3.6"/><circle cx="93.7" cy="144.6" r="3.6"/><circle cx="89.6" cy="157.5" r="3.6"/><circle cx="76" cy="157.5" r="3.6"/><circle cx="71.9" cy="144.6" r="3.6"/><circle cx="82.8" cy="148.2" r="4"/></g>
+                </g>
+                <g>
+                  <circle class="car-tyre" cx="342.8" cy="148.2" r="29.8"/>
+                  <circle class="car-rim" cx="342.8" cy="148.2" r="19.05"/>
+                  <g class="car-hole"><circle cx="342.8" cy="136.7" r="3.6"/><circle cx="353.7" cy="144.6" r="3.6"/><circle cx="349.6" cy="157.5" r="3.6"/><circle cx="336" cy="157.5" r="3.6"/><circle cx="331.9" cy="144.6" r="3.6"/><circle cx="342.8" cy="148.2" r="4"/></g>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </figure>
+
+        <h3>Top-Down View</h3>
+        <p class="muted">Kick zones sit on each door and the tailgate. Labelled Kick buttons in Car Controls do the same.</p>
+        <div class="car-figure car-top-wrap">
+          <svg id="car-top" class="car-svg" viewBox="0 0 480 370" role="img" aria-labelledby="car-top-title car-top-desc">
+            <title id="car-top-title">Top-down view of a black Proton Gen2 CPS with bronze rims</title>
+            <desc id="car-top-desc">Schematic drawn at 1 unit per 10 mm, front at right. The four doors swing out and the tailgate lifts. Dashed outlines show the wheels hidden under the body. The text status in words gives the same information.</desc>
+            <g transform="translate(40 0)">
+              <path class="car-body" d="M0 130 C1 128.2 2.7 122.7 6 119 C9.3 115.3 13.5 110.9 20 108 C26.5 105.1 34.7 103 45 101.5 C55.3 100 67.8 99.5 82 99 C96.2 98.5 110.3 98.8 130 98.8 C149.7 98.7 176.7 98.6 200 98.8 C223.3 98.9 248.3 99 270 99.5 C291.7 100 311.7 100.3 330 101.5 C348.3 102.8 366.7 104.4 380 107 C393.3 109.6 402.3 112.7 410 117 C417.7 121.3 422.5 126.7 426 133 C429.5 139.3 430.2 151.3 431 155 L431 215 C430.2 218.7 429.5 230.7 426 237 C422.5 243.3 417.7 248.7 410 253 C402.3 257.3 393.3 260.4 380 263 C366.7 265.6 348.3 267.3 330 268.5 C311.7 269.8 291.7 270 270 270.5 C248.3 271 223.3 271.1 200 271.3 C176.7 271.4 149.7 271.3 130 271.3 C110.3 271.2 96.2 271.5 82 271 C67.8 270.5 55.3 270 45 268.5 C34.7 267 26.5 264.9 20 262 C13.5 259.1 9.3 254.7 6 251 C2.7 247.3 1 241.8 0 240 Z"/>
+
+              <polygon class="car-glass" points="301,119 236,128 236,242 301,251"/>
+              <polygon class="car-panel" points="120,128 236,128 236,242 120,242"/>
+
+              <rect class="car-cabin" x="190" y="259" width="107" height="11"/>
+              <rect class="car-cabin" x="118" y="259" width="72" height="11"/>
+              <rect class="car-cabin" x="190" y="100" width="107" height="11"/>
+              <rect class="car-cabin" x="118" y="100" width="72" height="11"/>
+              <rect class="car-panel top-door top-door-fr" x="190" y="259" width="107" height="11"/>
+              <rect class="car-panel top-door top-door-rr" x="118" y="259" width="72" height="11"/>
+              <rect class="car-panel top-door top-door-fl" x="190" y="100" width="107" height="11"/>
+              <rect class="car-panel top-door top-door-rl" x="118" y="100" width="72" height="11"/>
+              <ellipse class="car-panel" cx="285" cy="96" rx="8" ry="4"/>
+              <ellipse class="car-panel" cx="285" cy="274" rx="8" ry="4"/>
+
+              <path class="car-cabin" d="M120 131 L12 133 Q2 140 0 150 L0 220 Q2 230 12 237 L120 239 Z"/>
+              <g class="top-tailgate">
+                <path class="car-panel" d="M120 131 L12 133 Q2 140 0 150 L0 220 Q2 230 12 237 L120 239 Z"/>
+                <polygon class="car-glass" points="112,137 40,146 40,224 112,233"/>
+                <rect class="car-panel" x="24" y="139" width="12" height="92"/>
+              </g>
+
+              <rect class="car-tyre-hidden" x="53" y="101.75" width="59.6" height="19.5" rx="6"/>
+              <rect class="car-tyre-hidden" x="53" y="248.75" width="59.6" height="19.5" rx="6"/>
+              <rect class="car-tyre-hidden" x="313" y="101.5" width="59.6" height="19.5" rx="6"/>
+              <rect class="car-tyre-hidden" x="313" y="249" width="59.6" height="19.5" rx="6"/>
+              <rect class="car-rim" x="63.75" y="103.25" width="38.1" height="16.5"/>
+              <rect class="car-rim" x="63.75" y="250.25" width="38.1" height="16.5"/>
+              <rect class="car-rim" x="323.75" y="103" width="38.1" height="16.5"/>
+              <rect class="car-rim" x="323.75" y="250.5" width="38.1" height="16.5"/>
+            </g>
+          </svg>
+          <button type="button" class="kick-zone kick-fl" data-kick="fl" aria-label="Kick FL, front left door"><span>Kick</span> <span>FL</span></button>
+          <button type="button" class="kick-zone kick-fr" data-kick="fr" aria-label="Kick FR, front right door"><span>Kick</span> <span>FR</span></button>
+          <button type="button" class="kick-zone kick-rl" data-kick="rl" aria-label="Kick RL, rear left door"><span>Kick</span> <span>RL</span></button>
+          <button type="button" class="kick-zone kick-rr" data-kick="rr" aria-label="Kick RR, rear right door"><span>Kick</span> <span>RR</span></button>
+          <button type="button" class="kick-zone kick-tg" data-kick="tg" aria-label="Kick TG, tailgate"><span>Kick</span> <span>TG</span></button>
+        </div>
+
+        <h3>Window Positions</h3>
+        <div class="meter-grid">
+          <div class="meter-item">
+            <label for="meter-fl"><span>Front left (passenger)</span><span id="meter-fl-text" class="mono">0%</span></label>
+            <meter id="meter-fl" min="0" max="100" value="0">0%</meter>
+          </div>
+          <div class="meter-item">
+            <label for="meter-fr"><span>Front right (driver)</span><span id="meter-fr-text" class="mono">0%</span></label>
+            <meter id="meter-fr" min="0" max="100" value="0">0%</meter>
+          </div>
+          <div class="meter-item">
+            <label for="meter-rl"><span>Rear left</span><span id="meter-rl-text" class="mono">0%</span></label>
+            <meter id="meter-rl" min="0" max="100" value="0">0%</meter>
+          </div>
+          <div class="meter-item">
+            <label for="meter-rr"><span>Rear right</span><span id="meter-rr-text" class="mono">0%</span></label>
+            <meter id="meter-rr" min="0" max="100" value="0">0%</meter>
+          </div>
+        </div>
       </section>
 
       <section class="panel" aria-labelledby="voice-control-heading">
@@ -118,7 +228,7 @@
           </label>
         </div>
 
-        <p class="muted">Mode A words: <span class="mono">open, open up, close, shut, hold, stay open, keep open, release, let go, resume, lock, unlock</span>. Mode A sends zero requests to Groq.</p>
+        <p class="muted">Mode A words: <span class="mono">lock, unlock</span>, or a window command: <span class="mono">open, close, shut, half, halfway</span> with the word <span class="mono">window</span> and one target (<span class="mono">driver, passenger, front left, front right, rear left, rear right, all</span>). Example: close the driver window. Mode A sends zero requests to Groq.</p>
 
         <div id="mode-b-panel" hidden>
           <div class="field-group">
@@ -175,9 +285,126 @@
       <ul id="enrolment-list" class="sentence-list"></ul>
     </section>
 
+    <section class="panel panel-spaced" aria-labelledby="car-controls-heading">
+      <div class="panel-header">
+        <h2 id="car-controls-heading">4. Car Controls</h2>
+        <span class="mono muted">Keyfob and child sensor are simulated.</span>
+      </div>
+
+      <div class="control-grid">
+        <div class="control-block">
+          <h3>Engine and Lock</h3>
+          <div class="button-grid">
+            <button id="engine-toggle" type="button" class="toggle-btn" aria-pressed="false">Engine: off</button>
+            <button id="lock-toggle" type="button" class="toggle-btn" aria-pressed="false">Car lock: unlocked</button>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <h3>Windows</h3>
+          <p class="muted">Window buttons work only when the engine is on or the keyfob is carried.</p>
+          <div role="group" aria-label="Front left (passenger) window" class="field-group">
+            <strong>Front left</strong>
+            <div class="button-grid">
+              <button type="button" data-win="fl" data-pos="100">Open</button>
+              <button type="button" data-win="fl" data-pos="50">Half</button>
+              <button type="button" data-win="fl" data-pos="0">Close</button>
+            </div>
+          </div>
+          <div role="group" aria-label="Front right (driver) window" class="field-group">
+            <strong>Front right</strong>
+            <div class="button-grid">
+              <button type="button" data-win="fr" data-pos="100">Open</button>
+              <button type="button" data-win="fr" data-pos="50">Half</button>
+              <button type="button" data-win="fr" data-pos="0">Close</button>
+            </div>
+          </div>
+          <div role="group" aria-label="Rear left window" class="field-group">
+            <strong>Rear left</strong>
+            <div class="button-grid">
+              <button type="button" data-win="rl" data-pos="100">Open</button>
+              <button type="button" data-win="rl" data-pos="50">Half</button>
+              <button type="button" data-win="rl" data-pos="0">Close</button>
+            </div>
+          </div>
+          <div role="group" aria-label="Rear right window" class="field-group">
+            <strong>Rear right</strong>
+            <div class="button-grid">
+              <button type="button" data-win="rr" data-pos="100">Open</button>
+              <button type="button" data-win="rr" data-pos="50">Half</button>
+              <button type="button" data-win="rr" data-pos="0">Close</button>
+            </div>
+          </div>
+          <div role="group" aria-label="All windows" class="field-group">
+            <strong>All windows</strong>
+            <div class="button-grid">
+              <button type="button" data-win="all" data-pos="100">Open</button>
+              <button type="button" data-win="all" data-pos="50">Half</button>
+              <button type="button" data-win="all" data-pos="0">Close</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <h3>Doors</h3>
+          <div class="button-grid">
+            <button type="button" data-kick="fl">Kick front left door</button>
+            <button type="button" data-kick="fr">Kick front right door</button>
+            <button type="button" data-kick="rl">Kick rear left door</button>
+            <button type="button" data-kick="rr">Kick rear right door</button>
+            <button type="button" data-kick="tg">Kick tailgate</button>
+          </div>
+          <div class="destructive-row">
+            <button type="button" data-door-close="fl">Close front left door</button>
+            <button type="button" data-door-close="fr">Close front right door</button>
+            <button type="button" data-door-close="rl">Close rear left door</button>
+            <button type="button" data-door-close="rr">Close rear right door</button>
+            <button type="button" data-door-close="tg">Close tailgate</button>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <h3>Keyfob (Simulated)</h3>
+          <p class="muted">Keyfob buttons always work, even with the engine off.</p>
+          <div class="field-group">
+            <button id="keyfob-carried" type="button" class="toggle-btn" aria-pressed="false">Keyfob carried: off</button>
+          </div>
+          <div class="button-grid">
+            <button type="button" data-keyfob="lock">Fob lock</button>
+            <button type="button" data-keyfob="unlock">Fob unlock</button>
+            <button type="button" data-keyfob="down">Fob windows down</button>
+            <button type="button" data-keyfob="up">Fob windows up</button>
+          </div>
+        </div>
+
+        <div class="control-block">
+          <h3>Child Sensor (Simulated)</h3>
+          <p class="muted">Demo only. Alert starts when the car is locked with the engine off, a child is set, and the owner moves beyond the alert distance.</p>
+          <div class="checkbox-row">
+            <input id="child-present" type="checkbox">
+            <label for="child-present">Child in car</label>
+          </div>
+          <div class="field-group">
+            <label for="owner-distance">Owner distance: <span id="owner-distance-text" class="mono">2 m</span></label>
+            <input id="owner-distance" type="range" min="0" max="30" step="1" value="2">
+          </div>
+          <div class="field-group">
+            <label for="alert-limit">Alert distance: <span id="alert-limit-text" class="mono">5 m</span></label>
+            <input id="alert-limit" type="range" min="1" max="30" step="1" value="5">
+          </div>
+          <div class="button-grid">
+            <button id="alert-ack" type="button">Acknowledge</button>
+            <button id="sound-toggle" type="button" class="toggle-btn" aria-pressed="true">Sound: on</button>
+          </div>
+          <p id="alert-panel-status" class="mono muted mt-2">No alert.</p>
+          <p id="sound-status" class="muted mt-2"></p>
+        </div>
+      </div>
+    </section>
+
     <section class="panel panel-spaced" aria-labelledby="log-heading">
       <div class="panel-header">
-        <h2 id="log-heading">4. Event Log (In Memory Only)</h2>
+        <h2 id="log-heading">5. Event Log (In Memory Only)</h2>
         <button id="clear-log-btn" type="button">Clear</button>
       </div>
 
