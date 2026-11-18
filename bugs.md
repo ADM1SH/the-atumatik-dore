@@ -54,6 +54,18 @@ Last update: 18/11/2026.
 - Symptom: The old key `atumatik_modeb_rules` stays unread in browsers that used the door demo. Mode B invalid replies carry no `target` field. `assets/og-share.png` has a short stray ground-line fragment at the right. `.claude/launch.json` is untracked and `.gitignore` does not list it. The event log table scrolls inside its own box at 375 px.
 - Fix: Clean each item, or record the choice in `decisions.md`.
 
+### BUG-014: Chime and alert limits on real devices
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The chime repeat comes from a timer that Chrome slows in a background tab. The audio context unlocks only on the first click or key press, and the page does not resume it later. No real device has tested sound.
+- Fix: Resume the audio context when the alert starts, schedule the tone pairs with the audio clock, and test on a phone and on desktop Chrome.
+
+### BUG-015: Spec deviations and unverified guide content
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The countdown readout sits under the banner in Car Model. The task put it in the Child Sensor panel, so the panel holds a plain copy without `role="timer"`. The guide marks three claims "not verified" (keyless methods, board input limits, radar remarks). The guide lists no presence radar module and one out-of-stock ESP32 board. Mode A has no synonyms such as "windows down". A voice command that the car refuses still answers the child alert (DEC-011).
+- Fix: Adam decides each item. Verify or remove the guide claims. Re-check the Commons licences on the file pages, then decide on a credit line.
+
 ### BUG-013: Checks that never ran
 - Date: 18/11/2026
 - Status: Open
