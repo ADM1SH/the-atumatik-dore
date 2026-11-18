@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hardware Build Guide | The Atumatik DoRe</title>
-  <meta name="description" content="Hardware build guide for a voice-controlled automatic sliding door using ESP32 and Raspberry Pi with safety wiring and Malaysian MYR parts.">
+  <title>Hardware Concept Guide | The Atumatik DoRe</title>
+  <meta name="description" content="Concept guide that maps the Proton Gen2 CPS browser demo to real hardware ideas: voice brain, ESP32 bridge, keyfob distance, and child presence radar, with safety limits.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self';">
   <link rel="canonical" href="https://adm1sh.github.io/the-atumatik-dore/guide.html">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="Hardware Build Guide | The Atumatik DoRe">
-  <meta property="og:description" content="ESP32 and Raspberry Pi options, Malaysian MYR pricing, relay wiring, sample code, and safety warnings.">
+  <meta property="og:title" content="Hardware Concept Guide | The Atumatik DoRe">
+  <meta property="og:description" content="How the car demo features map to real hardware ideas, with safety limits and checked Malaysian parts.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://adm1sh.github.io/the-atumatik-dore/guide.html">
   <meta property="og:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Hardware Build Guide | The Atumatik DoRe">
-  <meta name="twitter:description" content="ESP32 and Raspberry Pi hardware build guide for a voice-controlled sliding door.">
+  <meta name="twitter:title" content="Hardware Concept Guide | The Atumatik DoRe">
+  <meta name="twitter:description" content="Concept guide for a voice-controlled car window, keyfob, and child alert demo. Not a safety device.">
   <meta name="twitter:image" content="https://adm1sh.github.io/the-atumatik-dore/assets/og-share.png">
   <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/ibm-plex-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -43,63 +43,59 @@
 
   <main id="main-content" class="container">
     <div class="page-title-block">
-      <h1>Hardware Build Guide</h1>
-      <p class="subtitle">How to connect a voice brain to a real automatic sliding door controller using an ESP32 or a Raspberry Pi. This website does not connect to hardware directly.</p>
+      <h1>Hardware Concept Guide</h1>
+      <p class="subtitle">This guide maps each feature of the browser demo to a real hardware idea. It is a concept guide, not a build manual. This website does not connect to any hardware.</p>
     </div>
 
-    <div class="safety-box" role="note" aria-label="Electrical and door safety rules">
-      <h2>Safety First (Read Before Wiring)</h2>
+    <p class="safety-line" role="note">Demo only. This is not a child safety device. Never leave a child alone in a car.</p>
+
+    <div class="safety-box" role="note" aria-label="Safety rules">
+      <h2>Safety First (Read Before You Build Anything)</h2>
       <ul>
-        <li><strong>Do not connect any board to door motor power or mains power.</strong> Connect the microcontroller or Pi only to the low-voltage dry-contact trigger input of the commercial door controller, through a relay or an optocoupler.</li>
-        <li><strong>Keep the safety sensors of the door active.</strong> Infrared beam and obstacle crush sensors must stay wired to the door controller. A voice system must not be the only safety layer.</li>
-        <li><strong>Ask a licensed technician for any work on mains power.</strong></li>
-        <li><strong>Demo disclaimer:</strong> Do not claim that this demo or student prototype meets any automatic door safety standard (such as EN 16005 or ANSI/BHMA A156.10).</li>
+        <li><strong>Real power windows need anti-pinch protection.</strong> A DIY build must never bypass it. A voice system must never be the only layer that stops a window from closing on a hand, a neck, or a child.</li>
+        <li><strong>Do not connect anything to airbags, to the CAN bus safety circuits, or to the immobilizer.</strong> Do not wire into the car lock or window circuits without a qualified auto electrician.</li>
+        <li><strong>This project makes no safety claim.</strong> Do not say that this demo or a student prototype meets any vehicle safety standard.</li>
+        <li><strong>A child presence radar can miss a sleeping child.</strong> A BLE distance reading is a rough guess. Neither one replaces a person.</li>
       </ul>
     </div>
 
     <section class="panel">
-      <h2>1. How a Real Voice Door Build Works</h2>
-      <p>Every voice-controlled automatic door follows five stages. In our <a href="index.html">browser demo</a>, stages 1 through 4 run inside Chrome or Edge and stage 5 is an animation. In a real build, you split these stages across a voice brain and a door controller board.</p>
+      <h2>1. What Each Demo Feature Maps To</h2>
+      <p>In the <a href="index.html">browser demo</a>, every feature runs as code inside Chrome. Chrome can send microphone audio to Google for speech recognition, and Mode B sends recognized text (never audio) to Groq. The table shows the real idea behind each feature.</p>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th scope="col">Stage</th>
-              <th scope="col">Function</th>
-              <th scope="col">In This Web Demo</th>
-              <th scope="col">In a Real Hardware Build</th>
+              <th scope="col">Demo Feature</th>
+              <th scope="col">What the Demo Does</th>
+              <th scope="col">Real Hardware Idea</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>1. Microphone</td>
-              <td>Capture 16 kHz mono audio</td>
-              <td>Phone or laptop microphone via Web Audio</td>
-              <td>USB mic (Pi) or I2S MEMS mic like INMP441 (ESP32)</td>
+              <td>Voice windows</td>
+              <td>Mode A coded words or Mode B Groq rules move a window to 0%, 50%, or 100%.</td>
+              <td>A voice brain sends a short command to a bridge board. The car window controller must keep its own anti-pinch logic.</td>
             </tr>
             <tr>
-              <td>2. Speech to Text</td>
-              <td>Turn spoken words into text</td>
-              <td>Chrome Web Speech API (cloud or local)</td>
-              <td>Vosk / Whisper.cpp on Pi, or ESP-SR wake words on ESP32</td>
+              <td>Speaker lock</td>
+              <td>A voiceprint vector in the browser accepts or rejects a speaker.</td>
+              <td>A speaker model on a phone or laptop. It is a demo lock, because a recording or a similar voice can pass.</td>
             </tr>
             <tr>
-              <td>3. Voiceprint Check</td>
-              <td>Verify whether the speaker matches</td>
-              <td>Xenova/wavlm-base-plus-sv ONNX in browser</td>
-              <td>Speaker embedding model on Pi (or laptop), not feasible on bare ESP32</td>
+              <td>Keyfob</td>
+              <td>Buttons lock, unlock, and move all windows. A toggle says whether the keyfob is carried.</td>
+              <td>A key or a phone that the car recognizes. Check the maker documentation of any real keyless system before you copy its method (not verified here).</td>
             </tr>
             <tr>
-              <td>4. Command or AI</td>
-              <td>Decide door action (open, close, hold, lock)</td>
-              <td>Mode A keyword matcher or Groq API</td>
-              <td>Python script on Pi calling local rules or Groq HTTPS API</td>
+              <td>Kick sensor</td>
+              <td>A kick zone opens a door. A locked car needs the keyfob.</td>
+              <td>A foot-motion sensor, such as a capacitive or radar sensor, that only acts when a valid key is near.</td>
             </tr>
             <tr>
-              <td>5. Door Controller</td>
-              <td>Close dry-contact trigger and obey safety beam</td>
-              <td>CSS sliding panel animation + FSM</td>
-              <td>5V optocoupler relay bridged across door opener wall-button terminals</td>
+              <td>Child alert</td>
+              <td>A simulated sensor and a simulated owner distance start a 60 s countdown, a chime, and a move of the windows to 50%.</td>
+              <td>A presence radar in the cabin plus a distance estimate for the owner. See the limits in section 3.</td>
             </tr>
           </tbody>
         </table>
@@ -107,272 +103,93 @@
     </section>
 
     <section class="panel panel-spaced">
-      <h2>2. Four Hardware Architecture Options</h2>
-
-      <h3>Option A: ESP32 Alone</h3>
-      <p>An ESP32 board wires directly to an I2S microphone and a relay module, running small fixed wake-word models or sending audio over Wi-Fi.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Pros</th><th scope="col">Cons</th></tr></thead>
-          <tbody>
-            <tr>
-              <td>Low cost (RM62.58 to RM80.00 in Malaysia), instant 1-second boot, tiny enclosure.</td>
-              <td>Too little RAM (~520 KB SRAM, up to 8 MB PSRAM on ESP32-S3) for full WavLM voiceprint verification or general offline speech-to-text.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Option B: Phone or Laptop as Voice Brain + ESP32 as Door Controller</h3>
-      <p>This browser demo runs the voice UI and speaker lock on a phone or laptop and sends an HTTP or MQTT open signal to an ESP32 relay over Wi-Fi.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Pros</th><th scope="col">Cons</th></tr></thead>
-          <tbody>
-            <tr>
-              <td>Zero heavy AI code on the ESP32; reuses this web demo concept; lowest hardware cost for the door side.</td>
-              <td>Requires a phone or laptop left awake near the door; depends on Wi-Fi and Chrome speech servers.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Option C: Raspberry Pi as Both Voice Brain and Door Controller</h3>
-      <p>One Raspberry Pi runs microphone capture, offline or online speech recognition, voiceprint checks, and drives a GPIO relay directly.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Pros</th><th scope="col">Cons</th></tr></thead>
-          <tbody>
-            <tr>
-              <td>Single device handles full Linux Python AI libraries, local offline speech recognition, and GPIO relay control.</td>
-              <td>Higher cost (RM438.20+ for Pi 4B 4 GB), 25-to-40-second Linux boot time, and needs a clean shutdown to protect the microSD card.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Option D: Raspberry Pi as Voice Brain + ESP32 as Door Controller over Wi-Fi</h3>
-      <p>The Raspberry Pi sits safely indoors running speech and speaker models, while a small ESP32 mounted inside the door header box toggles the relay over Wi-Fi.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Pros</th><th scope="col">Cons</th></tr></thead>
-          <tbody>
-            <tr>
-              <td>Keeps expensive Pi away from door vibration and motor noise; short relay wires at the door.</td>
-              <td>Two boards to power and program; Wi-Fi drop prevents triggering until reconnected.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>2. Architecture</h2>
+      <ul>
+        <li><strong>Voice brain:</strong> A phone or laptop runs speech recognition, the speaker check, and the rules (this demo). It sends only the final command.</li>
+        <li><strong>ESP32 bridge:</strong> A small ESP32 board receives the command over Wi-Fi or BLE. It drives indicators on a bench model. It must not drive a real car window motor.</li>
+        <li><strong>Keyfob distance:</strong> The ESP32 can read the BLE signal strength (RSSI) of a phone or tag. It turns the reading into a rough distance.</li>
+        <li><strong>Child presence radar:</strong> A small millimeter-wave presence module reports "something moves here" to the ESP32.</li>
+      </ul>
+      <p>Use a bench model with LEDs or small indicator motors that are not connected to a car. Test every rule there first.</p>
     </section>
 
     <section class="panel panel-spaced">
-      <h2>3. ESP32 vs Raspberry Pi Comparison (Malaysian Prices Checked 15/11/2026)</h2>
+      <h2>3. Limits You Must State to Your Examiners</h2>
+      <ul>
+        <li><strong>BLE signal strength gives a rough distance only.</strong> Bodies, bags, metal, and walls change the reading, so treat any distance as a rough guess.</li>
+        <li><strong>A radar can miss a sleeping child.</strong> A still, sleeping child can read as empty. The alert never replaces a person.</li>
+        <li><strong>The 60 s countdown and the 50% window move are demo rules.</strong> They are not tested, and they do not make a car safe for a child.</li>
+        <li><strong>The voice lock is a demo.</strong> A recording of the enrolled speaker can pass. Similar voices can pass.</li>
+      </ul>
+    </section>
+
+    <section class="panel panel-spaced">
+      <h2>4. Parts List (Checked 18/11/2026)</h2>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th scope="col">Dimension</th>
-              <th scope="col">ESP32 (Robo ESP32 / ESP32 DevKit)</th>
-              <th scope="col">Raspberry Pi 4 Model B (4 GB)</th>
+              <th scope="col">Part</th>
+              <th scope="col">Use</th>
+              <th scope="col">Malaysian Price and Source</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Board cost in MYR (15/11/2026)</td>
-              <td>RM62.58 (<a href="https://my.cytron.io/p-robo-esp32" target="_blank" rel="noopener noreferrer">Cytron Robo ESP32</a>) or RM80.00 (<a href="https://www.mybotic.com.my/esp32-basic-starter-kit" target="_blank" rel="noopener noreferrer">Mybotic Starter Kit</a>)</td>
-              <td>RM438.20 (<a href="https://my.cytron.io/p-raspberry-pi-4-model-b-4gb" target="_blank" rel="noopener noreferrer">Cytron Pi 4B 4GB</a>) or RM490.00 (<a href="https://www.mybotic.com.my/raspberry-pi-4-model-b-4gb-and-kits" target="_blank" rel="noopener noreferrer">Mybotic Pi 4B 4GB Kit</a>)</td>
+              <td>ESP32 development board</td>
+              <td>Bridge, BLE distance reading, bench indicators</td>
+              <td><a href="https://my.cytron.io/p-robo-esp32" target="_blank" rel="noopener noreferrer">Cytron Robo ESP32</a>: RM62.58 listed, but the page shows "Out Of Stock" (checked 18/11/2026).</td>
             </tr>
             <tr>
-              <td>Skill needed</td>
-              <td>Beginner Arduino IDE sketch flashing</td>
-              <td>Beginner-friendly Python scripts + Linux OS flashing with Raspberry Pi Imager</td>
+              <td>Phone or laptop with Chrome</td>
+              <td>Voice brain (this demo)</td>
+              <td>Use a device you own. No purchase.</td>
             </tr>
             <tr>
-              <td>Microphone</td>
-              <td>Digital I2S MEMS mic (INMP441) wired to 3 pins</td>
-              <td>Plug-and-play USB microphone (<a href="https://my.cytron.io/p-mini-usb-microphone" target="_blank" rel="noopener noreferrer">RM14.90 at Cytron</a>)</td>
+              <td>Presence radar module</td>
+              <td>Child presence idea on the bench</td>
+              <td>Not verified. A search for "ld2410" at Mybotic Malaysia returned no product. Cytron Malaysia lists one "mmwave" product, a LoRaWAN radar presence sensor at RM430.50, out of stock (checked 18/11/2026). Choose a module from its datasheet and check the stock yourself.</td>
             </tr>
             <tr>
-              <td>Speech recognition on board</td>
-              <td>Short fixed wake words only (ESP-SR) or send audio to cloud</td>
-              <td>Full offline sentences with Vosk or Whisper.cpp (small/tiny)</td>
-            </tr>
-            <tr>
-              <td>Speaker verification</td>
-              <td>Not practical locally (memory too small for WavLM)</td>
-              <td>Can run quantized ONNX speaker models in Python (1 to 2 seconds latency)</td>
-            </tr>
-            <tr>
-              <td>Power supply</td>
-              <td>5V 1A USB-C or regulated 5V supply</td>
-              <td>5V 3A USB-C official supply (stable current required)</td>
-            </tr>
-            <tr>
-              <td>Start-up time</td>
-              <td>Under 2 seconds from power on</td>
-              <td>25 to 40 seconds for Linux boot</td>
-            </tr>
-            <tr>
-              <td>Reliability</td>
-              <td>No SD card corruption on sudden power cuts</td>
-              <td>microSD card can corrupt without proper shutdown or read-only OS</td>
-            </tr>
-            <tr>
-              <td>Size</td>
-              <td>Small microcontroller board (~5 cm x 3 cm)</td>
-              <td>Credit-card computer (~8.5 cm x 5.6 cm) + heatsink/case</td>
-            </tr>
-            <tr>
-              <td>Offline use</td>
-              <td>Offline fixed wake words only; AI rules need Wi-Fi</td>
-              <td>Full offline mode possible for Mode A commands + local voiceprint</td>
+              <td>LEDs, resistors, breadboard</td>
+              <td>Bench model of windows and door state</td>
+              <td>Not verified. Generic parts.</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <p class="muted">Cytron Malaysia and Mybotic Malaysia were the first sources. Prices change. Check the page again before you buy.</p>
     </section>
 
     <section class="panel panel-spaced">
-      <h2>4. Hardware Recommendation (15/11/2026)</h2>
+      <h2>5. Wiring Caution</h2>
       <ul>
-        <li><strong>Recommended Brain Board: Raspberry Pi 4 Model B (4 GB RAM).</strong> Priced at <strong>RM438.20</strong> at <a href="https://my.cytron.io/p-raspberry-pi-4-model-b-4gb" target="_blank" rel="noopener noreferrer">Cytron Malaysia</a> and <strong>RM490.00</strong> (kit) at <a href="https://www.mybotic.com.my/raspberry-pi-4-model-b-4gb-and-kits" target="_blank" rel="noopener noreferrer">Mybotic Malaysia</a> (checked 15/11/2026). 4 GB RAM runs local speech-to-text, speaker embeddings, and Groq API calls reliably.</li>
-        <li><strong>Is a Raspberry Pi 5 needed?</strong> No. Pi 5 boards (<a href="https://my.cytron.io/p-raspberry-pi-5" target="_blank" rel="noopener noreferrer">Cytron Pi 5 series</a> from RM202.00 entry/bundles up to RM2,020.60; 4 GB standalone listed at RM486.47 on <a href="https://my.element14.com" target="_blank" rel="noopener noreferrer">element14 Malaysia</a> and RM454.30 on Mouser Malaysia, checked 15/11/2026) run WavLM slightly faster, but also require active cooling and a 5V 5A USB-C adapter without changing the door outcome.</li>
-        <li><strong>Why not Raspberry Pi Zero 2 W?</strong> Although very affordable at <strong>RM74.90</strong> (<a href="https://my.cytron.io/p-raspberry-pi-zero-2-w" target="_blank" rel="noopener noreferrer">Cytron Pi Zero 2 W</a>, checked 15/11/2026), it has only 512 MB RAM, which swaps or runs out of memory when loading WavLM speaker verification alongside speech recognition. Use Zero 2 W only if all AI runs in the cloud.</li>
-        <li><strong>Recommended Door Relay Controller:</strong> <a href="https://my.cytron.io/p-robo-esp32" target="_blank" rel="noopener noreferrer">Cytron Robo ESP32</a> (<strong>RM62.58</strong>, checked 15/11/2026) paired with a <a href="https://my.cytron.io/p-1-channel-5v-relay-module" target="_blank" rel="noopener noreferrer">1-Channel 3V/5V OptoCoupler Relay Module</a> (<strong>RM3.50 to RM7.00</strong>, checked 15/11/2026).</li>
+        <li>Keep the ESP32 on a bench with USB power. Do not connect it to a car battery, a car window motor, or a car lock.</li>
+        <li>A car uses a 12 V system. Check the datasheet of every board for its input limits before you connect it (not verified here).</li>
+        <li>Never splice into airbag wiring, CAN bus safety circuits, or the immobilizer. A fault there can injure people and can stop the car from starting.</li>
+        <li>If a real car modification is part of your project, ask a qualified auto electrician. Keep the factory anti-pinch logic and the factory window switches working.</li>
+        <li>Test with a multimeter and LEDs before you connect anything to a motor.</li>
       </ul>
     </section>
 
     <section class="panel panel-spaced">
-      <h2>5. Step-by-Step Setup for Beginners (Options B, C, and D)</h2>
-
-      <h3>Parts List</h3>
-      <ul>
-        <li>Raspberry Pi 4 Model B (4 GB) + 32 GB microSD card + 5V 3A USB-C supply + USB microphone (RM14.90 at Cytron).</li>
-        <li>Cytron Robo ESP32 (RM62.58 at Cytron) or standard ESP32 DevKit + jumper wires.</li>
-        <li>1-Channel 3V or 5V Optocoupler Relay Module (RM3.50 to RM7.00 at Cytron).</li>
-        <li>Existing commercial sliding door operator with a low-voltage wall-switch dry-contact terminal (labeled COM and TRIG / PUSH).</li>
-      </ul>
-
-      <h3>Wiring Table (Low-Voltage Dry Contact Only)</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Board Pin (ESP32 or Pi)</th>
-              <th scope="col">Relay Module Pin</th>
-              <th scope="col">Door Opener Terminal</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>3.3V or 5V</td><td>VCC</td><td>Not connected</td></tr>
-            <tr><td>GND</td><td>GND</td><td>Not connected</td></tr>
-            <tr><td>ESP32 GPIO 23 (or Pi GPIO 17)</td><td>IN (Signal)</td><td>Not connected</td></tr>
-            <tr><td>Relay COM</td><td>Screw Terminal COM</td><td>Door Controller Wall-Button COM</td></tr>
-            <tr><td>Relay NO (Normally Open)</td><td>Screw Terminal NO</td><td>Door Controller Wall-Button TRIG</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Install and Test Steps</h3>
-      <ol>
-        <li>Flash Raspberry Pi OS (64-bit) onto the microSD card using Raspberry Pi Imager and plug in the USB microphone.</li>
-        <li>Verify the microphone with <span class="mono">arecord -l</span> in the Raspberry Pi terminal, then install Python packages (<span class="mono">pip install requests gpiozero</span>).</li>
-        <li>If using an ESP32 relay controller (Options B or D), install Arduino IDE, add the ESP32 board manager URL, plug in USB, and upload the sketch below after filling your Wi-Fi name and password.</li>
-        <li>Test the relay BEFORE connecting to a door: command an open action and listen for a crisp click and continuity across COM and NO with a multimeter.</li>
-        <li>Only after verifying the 500 ms pulse works cleanly on a multimeter, connect COM and NO across the door opener wall-button terminals with mains power turned off by a technician.</li>
-      </ol>
-
-      <h3>Sample Code: ESP32 Wi-Fi Dry-Contact Relay (Arduino C++)</h3>
-      <p class="banner banner-warn">Not tested on hardware. We cannot run this code on physical hardware.</p>
-      <pre class="code-block">#include &lt;WiFi.h&gt;
-#include &lt;WebServer.h&gt;
-
-// Replace with your local Wi-Fi network before flashing
-const char* WIFI_SSID = "YOUR_WIFI_NAME";
-const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
-const int RELAY_PIN = 23; // Active LOW optocoupler relay
-
-WebServer server(80);
-
-void pulseDoorTrigger() {
-  digitalWrite(RELAY_PIN, LOW);  // Close dry contact
-  delay(500);                    // 500 ms simulated button press
-  digitalWrite(RELAY_PIN, HIGH); // Release contact
-  server.send(200, "application/json", "{\"status\":\"triggered\"}");
-}
-
-void setup() {
-  pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, HIGH); // Keep relay open on boot
-  Serial.begin(115200);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  Serial.println(WiFi.localIP());
-  server.on("/trigger", HTTP_POST, pulseDoorTrigger);
-  server.begin();
-}
-
-void loop() {
-  server.handleClient();
-}</pre>
-
-      <h3>Sample Code: Raspberry Pi Voice Brain and Relay Pulse (Python)</h3>
-      <p class="banner banner-warn">Not tested on hardware. We cannot run this code on physical hardware.</p>
-      <pre class="code-block">import os
-import time
-import requests
-from gpiozero import OutputDevice
-
-# Set GROQ_API_KEY in environment before running: export GROQ_API_KEY="..."
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-RELAY = OutputDevice(17, active_high=False, initial_value=False)
-
-def pulse_door():
-    RELAY.on()
-    time.sleep(0.5)
-    RELAY.off()
-
-def decide_action(transcript):
-    words = transcript.lower().strip()
-    if "open" in words:
-        return "open"
-    if not GROQ_API_KEY:
-        return "none"
-    res = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
-        json={
-            "model": "openai/gpt-oss-20b",
-            "messages": [{"role": "user", "content": f"Door command: {transcript}"}],
-            "max_tokens": 60,
-        },
-        timeout=8,
-    )
-    return "open" if res.ok and "open" in res.text.lower() else "none"
-
-if __name__ == "__main__":
-    if decide_action("Open the door please") == "open":
-        pulse_door()
-        print("Door relay pulsed.")</pre>
-    </section>
-
-    <section class="panel panel-spaced">
-      <h2>6. Limits of the Voice Lock (For the FYP Presentation)</h2>
-      <p>Explain these three facts clearly to your FYP examiners:</p>
-      <ul>
-        <li><strong>Replay risk:</strong> A phone recording of the enrolled speaker can score above the threshold and unlock the demo door.</li>
-        <li><strong>Similar voices:</strong> Family members or speakers with a close vocal pitch can occasionally pass a simple cosine similarity threshold.</li>
-        <li><strong>Not a security lock:</strong> Real access control combines voice with a PIN, NFC badge, or physical deadbolt rather than relying on a browser voiceprint alone.</li>
-      </ul>
+      <h2>6. FAQ</h2>
+      <h3>Does this website control a real car?</h3>
+      <p>No. Everything runs in your browser. No hardware is controlled.</p>
+      <h3>Can I use the child alert in my car?</h3>
+      <p>No. It is a demo. Never leave a child alone in a car, and do not trust a DIY alert to protect one.</p>
+      <h3>Why does the alert keep the windows at 50%?</h3>
+      <p>It is a demo rule that shows ventilation. It is not a tested safety measure.</p>
+      <h3>Why does the keyfob toggle exist if the car is locked?</h3>
+      <p>The kick sensor needs it. A locked car opens a door on a kick only when the keyfob is carried.</p>
+      <h3>Which side is the driver?</h3>
+      <p>Malaysia is right-hand drive. The driver window is front right and the passenger window is front left.</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <span>The Atumatik DoRe (15/11/2026) | Hardware Build Guide</span>
+      <span>The Atumatik DoRe (18/11/2026) | Hardware Concept Guide</span>
       <div class="footer-links">
         <a href="index.html">Demo</a>
         <a href="guide.html">Hardware Guide</a>
