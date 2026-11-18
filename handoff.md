@@ -1,6 +1,6 @@
 # Handoff
 
-Last update: 18/11/2026.
+Last update: 18/11/2026 (wrap-up for Argon 4).
 
 ## 1. Goals
 
@@ -11,7 +11,8 @@ Last update: 18/11/2026.
 
 ## 2. Current state
 
-- All six phases are built on branch `feat/proton-gen2`. Nothing is committed. The deletion of `src/door-fsm.js` and `tests/door-fsm.test.js` is staged.
+- All six phases are built and committed on branch `feat/proton-gen2` (`59606a7`, `6ed784b`, `aac779a`). Nothing is pushed. `main` stays at `1225c43`. The wrap-up edits to `bugs.md`, `task_today.md`, `handoff.md`, and `GEMINI.md` are not committed.
+- Open errors: BUG-007 to BUG-013 in `bugs.md`. The next task is the Argon 4 hand-off in `task_today.md`.
 - `node --test tests/` passes `49/49` (was `25/25`).
 - Lighthouse (v13.6.0, mobile and desktop) scores `100` in Accessibility, Best Practices, SEO, and Agentic Browsing on `index.html` (60 audits pass) and `guide.html` (57 pass) on `localhost`. The live site before the change scored `100` (57 and 56 pass).
 - Browser pane checks on `localhost`: the rules, keyfob buttons, kick table, every alert response and cancel, and the 60 s ventilate (50, 100, 50, 50 read at 68 s) ran in the page, the BUG-006 restore was re-checked on the final `app.js`, zero console errors, no horizontal scroll at 375 px, kick zones `44 x 44` px, reduced motion gives `0 s` transitions.
@@ -48,9 +49,10 @@ Last update: 18/11/2026.
 
 ## 6. Next steps
 
-1. Adam reviews the branch and says when to commit. Commit only on request. Do not push to `main`.
-2. Hand tests: on a real phone and on desktop Chrome, speak window commands with Mode A and Mode B, try a stranger voice with a voiceprint enrolled, listen to the chime after one click, and tap each kick zone.
-3. Check that the car shape looks like a Gen2 CPS. Decide whether the guide needs a credit line for the reference photos.
-4. Parked: on desktop Chrome and Android Chrome, enrol 2 sentences, reload, record the other 3, and reload again. Check that the fifth sentence turns all rows to "Captured (saved)".
-5. Parked: enrol Adam's voice across all five sentences and test live scores against a second speaker. Record the scores in `decisions.md` and update `DEFAULT_THRESHOLD` in `src/voiceprint.js` if needed.
-6. Parked: test Mode B with a temporary Groq key from console.groq.com.
+1. Pass `argon_car_model_prompt.md` to Argon 4 with the six reference files from the `Gen2 Reference` folder. Argon 4 lists all errors first and waits for Adam's approval.
+2. Adam reviews the branch and says when to commit the wrap-up edits and when to merge. Do not push to `main`.
+3. Hand tests: on a real phone and on desktop Chrome, speak window commands with Mode A and Mode B, try a stranger voice with a voiceprint enrolled, listen to the chime after one click, and tap each kick zone.
+4. Decide whether the guide needs a credit line for the reference photos.
+5. Parked: on desktop Chrome and Android Chrome, enrol 2 sentences, reload, record the other 3, and reload again. Check that the fifth sentence turns all rows to "Captured (saved)".
+6. Parked: enrol Adam's voice across all five sentences and test live scores against a second speaker. Record the scores in `decisions.md` and update `DEFAULT_THRESHOLD` in `src/voiceprint.js` if needed.
+7. Parked: test Mode B with a temporary Groq key from console.groq.com.

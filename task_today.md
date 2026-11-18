@@ -4,20 +4,14 @@ Last update: 18/11/2026.
 
 ## Single Active Task
 
-Replace the sliding door demo with a Proton Gen2 CPS (manual) car demo. Work on branch `feat/proton-gen2`. Do the phases in order and stop after each phase.
-
-1. Car SVG (both views), tokens, page layout, and door removal. Status: done.
-2. Car state module (`src/car.js`) and tests. Status: done.
-3. Voice: Mode A vocabulary, Mode B schema, and wiring in `app.js`. Status: done.
-4. Child alert: logic, countdown, chime, banner, and tests with a fake clock. Status: done.
-5. Keyfob panel and kick sensor, with tests. Status: done.
-6. Guide rewrite, docs, `audit.md`, six boards, Lighthouse, and repo scan. Status: done, waiting for review.
+Hand the branch `feat/proton-gen2` to Argon 4 (Gemini). Argon 4 does two things in order. First it lists every error in the repository (read-only) and waits for Adam's approval. Then it improves the Gen2 car model in both SVG views.
+The full prompt is in `argon_car_model_prompt.md` (gitignored, local only). The known errors are BUG-007 to BUG-013 in `bugs.md`.
 
 ## Files Needed for This Task
 
-- `src/app.js`
-- `src/car.js` (Phase 2)
-- `tests/car.test.js` (Phase 2)
-- `index.html`
+- `bugs.md`
+- `index.html` (both SVGs)
 - `assets/styles.css`
 - `design/tokens.css`
+- `src/app.js` (`renderCar`)
+- `decisions.md` (DEC-012)

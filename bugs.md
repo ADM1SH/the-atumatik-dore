@@ -16,9 +16,53 @@ Last update: 18/11/2026.
 
 ## Open
 
-None.
+### BUG-007: Fuel flap is not drawn
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The side view has no fuel flap. The plan said to draw it on the right side only.
+- Root cause: Skipped during Phase 1. The Serdang photo shows a rounded rectangle on the right rear quarter, above the rear arch and behind the rear door. The left side has none.
+- Fix: Draw the flap in a right-side-only group so the mirror toggle hides it.
+
+### BUG-008: The Gen2 model is a rough schematic
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The side silhouette is a smoothed polyline. The glass, spoiler wedge, tail lamp, mirror, and door cut-outs are crude. The tailgate polygon crosses the rear quarter light, and the lamp moves with the tailgate. The tailgate lifts only 40 degrees. The top view is mostly inferred, and doors appear as thin strips.
+- Root cause: The model came from pixel measurements of one 2007 drawing and three photos, with hand-built paths.
+- Fix: Redraw with better curves and detail. See `argon_car_model_prompt.md`.
+
+### BUG-009: The six boards are slightly stale
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The boards were captured before the panel countdown readout was added to `index.html` and before the last wording fixes in `guide.html`.
+- Fix: Capture the six boards again after the model work.
+
+### BUG-010: `ownerVerified` is always true and the page wiring has no automated test
+- Date: 18/11/2026
+- Status: Open
+- Symptom: In `src/app.js` the `ownerVerified` constant is always `true`, because rejected speakers return earlier. The stranger-voice rule is tested only at module level in `tests/child-alert.test.js`. No test covers the DOM wiring in `src/app.js` (941 lines).
+- Fix: Pass the real speaker result to the alert, and add a wiring test or a browser script.
+
+### BUG-011: Enrolment sentences and some names still say "door"
+- Date: 18/11/2026
+- Status: Open
+- Symptom: `ENROLMENT_SENTENCES` in `src/voiceprint.js` are door sentences (kept on purpose, because the enrolment flow is frozen). Variables such as `fsmRes` and the `doorState` wording in old docs remain.
+- Fix: Ask Adam before any change to `src/voiceprint.js`. Rename `fsmRes` in `src/app.js`.
+
+### BUG-012: Small leftovers
+- Date: 18/11/2026
+- Status: Open
+- Symptom: The old key `atumatik_modeb_rules` stays unread in browsers that used the door demo. Mode B invalid replies carry no `target` field. `assets/og-share.png` has a short stray ground-line fragment at the right. `.claude/launch.json` is untracked and `.gitignore` does not list it. The event log table scrolls inside its own box at 375 px.
+- Fix: Clean each item, or record the choice in `decisions.md`.
+
+### BUG-013: Checks that never ran
+- Date: 18/11/2026
+- Status: Open
+- Symptom: Real microphone voice commands, a stranger voice with an enrolled voiceprint, Mode B with a live Groq key, an audible chime on a real device, a real phone touch test, and Lighthouse on the live site after deployment did not run.
+- Fix: Run them by hand (see `handoff.md`).
 
 ## Known Risks
+
+0. **Car demo (18/11/2026):** The child alert is a demo and not a safety device. Reference photos have licences that are not re-checked on the file pages (CC BY-SA and CC BY), and the blueprint licence is unclear. The chime repeat can stutter in a background tab. BLE distance is a rough guess and a radar can miss a sleeping child (stated in the guide).
 
 1. **First-time voice model download (`97.03 MB`):** Enrolling or running speaker verification requires downloading `Xenova/wavlm-base-plus-sv` quantized ONNX (`96.97 MB`) plus config JSON files. Slow mobile connections take longer, so the UI keeps Mode A functional without the model and shows progress bars during download.
 2. **Short voice clip variance (1 to 3 seconds):** Short push-to-talk utterances produce noisier speaker embeddings than longer speech samples. The default `0.78` cosine threshold is PROVISIONAL until calibrated against live recordings of Adam and a second speaker.

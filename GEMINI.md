@@ -1,6 +1,6 @@
 # Project Rules: The Atumatik DoRe
 
-Last update: 15/11/2026.
+Last update: 18/11/2026.
 
 ## 1. Project Scope
 
@@ -18,6 +18,14 @@ Do not copy global personal rules or local machine paths into this repository.
 - Keep all code in plain HTML, CSS, and ES modules without bundlers or frameworks.
 - Keep secrets, API keys, personal data, real email addresses, and local home paths out of the repository.
 - Add no AI co-author lines to commits.
+
+## 2a. Car Demo Notes (18/11/2026)
+
+- Work on branch `feat/proton-gen2`. Never push to `main` and never force-push.
+- Pure logic lives in `src/car.js`, `src/child-alert.js`, and `src/mode-a.js`. Keep them free of DOM globals.
+- The strict CSP blocks `style` attributes and `<style>` blocks. Style SVG with classes in `assets/styles.css`. Set values with `element.style.setProperty` from JavaScript.
+- Reference images for the car model stay outside the repository. Never commit them.
+- Do not change `src/voiceprint.js` or the enrolment flow without Adam's approval.
 
 ## 3. Source-of-Truth Table
 
