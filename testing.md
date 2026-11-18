@@ -50,11 +50,11 @@ The old `tests/door-fsm.test.js` (7 tests) was removed with the door. The door-s
 
 ## 4. Car Demo Browser Checks (18/11/2026, `localhost`)
 
-- [x] Clicked in the real page (18/11/2026): window refused with engine off and no keyfob; window works with the keyfob carried and engine off; "Close all doors first."; "Locked: keyfob required"; kick on a locked car with the keyfob unlocks the car and opens the door; "Door already open"; keyfob lock refused with a door open; keyfob lock, unlock, windows down, and windows up with the engine off and the keyfob not carried; the Sound toggle and its status text; the mirror toggle.
-- [x] Child alert in the real page: started; acknowledge stopped it; owner back within the limit stopped it while active; each cancel (child removed, car unlocked, engine started) ended it; re-arm held. The 60 s run started with windows fl 0, fr 100, rl 50, rr 0. At 59 s the windows were unchanged. At 68 s they read 50, 100, 50, 50 (windows above 50% untouched) with the engine off and no keyfob.
-- [x] Zero console errors on `index.html` and `guide.html`. The CSP stays strict (no inline style, no extra script).
-- [x] At 375 px the page has no horizontal scroll (only the event log table scrolls inside its box). Kick zones are 44 x 44 px with at least 13 px gap.
-- [x] Contrast (WCAG formula, both themes): outline against panel 15.67 or more, glass against body 7.22, cabin gap against glass 4.10, rim against tyre 5.22 or more, door line against body 5.40.
-- [x] Under `prefers-reduced-motion: reduce` the transition time of windows, doors, and tailgate is 0 s.
-- [x] BUG-006 restore re-checked on the final `app.js`: seeded voiceprint and consent give the consent tick, five "Captured (saved)" rows, disabled record buttons, zero console errors, and zero requests to the `huggingface.co` host (the pane loaded the transformers script from jsDelivr because its model cache exists). Storage cleaned afterward.
-- [ ] Not run: real microphone voice commands, a stranger voice with an enrolled voiceprint, Mode B with a live Groq key, an audible chime on a real device, and a real phone touch test (see the hand test list in `handoff.md`).
+- [x] Interactive rules passed in Chrome (`localhost:8768`, Model v2): window refused with engine off and no keyfob. Lock refused while a door is open. Kick tests passed for open, duplicate, locked without keyfob, and locked with keyfob. Keyfob lock, unlock, windows down, and windows up passed. Mirror toggle hid the right-side fuel flap and lock cylinder.
+- [x] Child alert real-time 60 s run passed in Chrome: started with windows `0, 100, 50, 0`. At 58 s windows read `0, 100, 50, 0`. At 61.5 s windows moved to `50, 100, 50, 50` with the engine off and no keyfob.
+- [x] Zero console errors on `index.html`, `guide.html`, and `404.html`. The CSP stays strict with zero inline styles and zero extra scripts.
+- [x] At 375 px and 1440 px no page overflows horizontally except `.table-wrap` on `index.html`. Kick zones stay `44 x 44 px` with at least 13 px gap.
+- [x] Contrast (WCAG formula, both themes): outline vs panel `15.67:1` or higher. Glass vs body `7.22:1`. Open cabin vs glass `4.10:1`. Rim vs tyre `5.22:1` or higher. Door line vs body `5.40:1`. Tail lamp vs body `3.27:1` or higher. Text meets `8.57:1` or higher.
+- [x] Under `prefers-reduced-motion: reduce`, transition duration on all six animated model classes is `0s`.
+- [x] BUG-006 restore passed after Model v2 with seeded voiceprint and consent. The page showed checked consent, five "Captured (saved)" rows, disabled record buttons, zero console errors, and zero `huggingface.co` requests. Storage was cleaned afterward.
+- [ ] Not run: real microphone voice commands and a stranger voice with an enrolled voiceprint. Mode B with a live Groq key, an audible device chime, a real phone touch test, and post-Model-v2 Lighthouse also did not run.

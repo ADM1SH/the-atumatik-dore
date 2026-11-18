@@ -64,11 +64,17 @@ Last update: 18/11/2026.
 
 ### DEC-012: Car Model Sources, Scale, and Look
 - Date: 18/11/2026
-- Scale: 1 SVG unit is 10 mm in both views. Dimensions of the Gen2 1.6 CPS from encycarpedia.com (page titled CPS, `08-gen-2-1-6-cps-hatch`): length 4,310 mm, width 1,725 mm, height 1,435 mm, wheelbase 2,600 mm, front track 1,475 mm, rear track 1,470 mm, tyre 195/55 R15. Ground clearance 150 mm and rim 15 x 6.5 in come from pages that do not name the CPS and are approximate.
+- Scale: 1 SVG unit is 10 mm in both views. Dimensions of the Gen2 1.6 CPS come from encycarpedia.com (`08-gen-2-1-6-cps-hatch`). Length is 4,310 mm, width is 1,725 mm, height is 1,435 mm, wheelbase is 2,600 mm, front track is 1,475 mm, rear track is 1,470 mm, and tyre size is 195/55 R15. Ground clearance 150 mm and rim 15 x 6.5 in come from pages that do not name the CPS and are approximate.
 - Look: pre-facelift silhouette with the rear spoiler. The spoiler appears on pre-facelift cars in the reference photos, so it is not a facelift marker. A black roof cannot show on a black body. The label says "Proton Gen2 CPS (manual)" with no engine or gearbox claim, because no source was cited for them.
 - Measurements from the reference drawing (pixel scan, not copied): the 2007 side drawing is squashed vertically by about 1.10 and tilted about 1 degree. Wheelbase over length matches the spec at 0.603. The 2005 top plan is 16% too long for the 5-door body, so the plan view uses the spec size and takes shape ideas only. The front and rear overhang split (about 877 mm and 828 mm) comes from the drawing.
 - Inferred: the rear shape, the tailgate, the fuel flap (right side only, seen in the Serdang photo), and the whole top view.
-- References (private tracing material, never committed): Wikimedia Commons photos by User:Two hundred percent (CC BY-SA), Vauxford (CC BY-SA 4.0), and Simon Yeo (CC BY 2.0), licences not yet re-checked on the file pages. The blueprint GIFs have an unclear licence. The SVG paths are built by hand from measured points. There is no auto-trace.
+- References (private tracing material, never committed): Wikimedia Commons photos by User:Two hundred percent (CC BY-SA), Vauxford (CC BY-SA 4.0), and Simon Yeo (CC BY 2.0). Licences are not yet re-checked on the file pages. The blueprint GIFs have an unclear licence. The SVG paths are built by hand from measured points. There is no auto-trace.
+
+### DEC-013: Proton Gen2 CPS Model v2 (Branch `feat/gen2-model-v2`)
+- Date: 18/11/2026
+- Choice: Redraw `#car-side` (`viewBox="0 -26 480 216"`) and `#car-top` (`viewBox="0 0 480 370"`) with cubic Beziers at 1 SVG unit per 10 mm. Move the fuel flap and lock cylinder into `<g class="car-right-only">` hidden by `.is-mirrored`. Hinge `.side-tailgate` at the roof (`96px 42px`, `48 deg`) to clear the rounded-D quarter glass. Keep the 3-lens tail lamp fixed on the body. Draw 5-split-spoke bronze rims, curved top-down greenhouse glass, and open-door stroke outlines.
+- Reason: Resolves BUG-007 and BUG-008 while keeping both views on the exact `480` unit horizontal scale and driving all animations through CSS variables in `renderCar`. The 4-corner wheel rim geometry and open-aperture contrast stay readable in both light and dark themes under strict CSP (`style-src 'self'`).
+- Assets: Re-rendered `assets/favicon.svg`, `assets/og-share.png` (without the stray ground-line fragment), and all six boards in `design/boards/` (`1440 px` desktop, `375 px` mobile, true `light` and `dark` themes).
 
 ## Synthetic Two-Voice Smoke Test Results
 

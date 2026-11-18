@@ -1,6 +1,6 @@
 # Design System: The Atumatik DoRe
 
-Last update: 15/11/2026.
+Last update: 18/11/2026.
 
 ## 1. Design Heritage and Note on ADM UI Kit
 
@@ -18,11 +18,21 @@ No generic gradients, glassmorphism, floating glows, decorative icons, or AI cop
 | `--surface-alt` | `#EAE8E1` | `#242424` | Secondary inset surface and track rail |
 | `--ink` | `#141414` | `#F4F3EF` | Primary text (contrast >= 14:1) |
 | `--ink-muted` | `#4A4A46` | `#B8B6AE` | Secondary labels (contrast >= 5.5:1) |
-| `--border` | `#141414` | `#3D3D38` | Crisp 2px structural rule lines |
+| `--border` | `#141414` | `#52524C` | Crisp 2px structural rule lines |
 | `--accent-primary` | `#1D4ED8` | `#60A5FA` | Primary Bauhaus blue action and focus ring |
-| `--accent-danger` | `#C81E1E` | `#F87171` | Lock, deny, delete, and obstacle signal |
+| `--accent-danger` | `#C81E1E` | `#F87171` | Lock, deny, delete, and child alert signal |
 | `--accent-warn` | `#92400E` | `#FBBF24` | Hold, provisional state, and caution badges |
 | `--accent-ok` | `#166534` | `#4ADE80` | Accepted speaker and unlocked signal |
+| `--car-body` | `#121212` | `#121212` | Car exterior paint |
+| `--car-edge` | `#121212` | `#F4F3EF` | Car outer silhouette stroke |
+| `--car-line` | `#8A8A84` | `#8A8A84` | Shut lines, creases, and handles |
+| `--car-glass` | `#8FA3B8` | `#8FA3B8` | Windows and headlamp lenses |
+| `--car-cabin` | `#3A3F45` | `#3A3F45` | Open cabin and door cut-outs |
+| `--car-well` | `#050505` | `#050505` | Wheel wells and lower grille |
+| `--car-tyre` | `#0A0A0A` | `#0A0A0A` | Tyre sidewalls and wheel gaps |
+| `--car-rim` | `#B87333` | `#C8864A` | Bronze 5-split-spoke alloy rims |
+| `--car-lamp` | `#C81E1E` | `#F87171` | Rear tail lamp shell and lenses |
+| `--car-ground` | `#C8C5BC` | `#52524C` | Side-view ground line |
 
 ## 3. Typography and Spacing
 

@@ -16,26 +16,6 @@ Last update: 18/11/2026.
 
 ## Open
 
-### BUG-007: Fuel flap is not drawn
-- Date: 18/11/2026
-- Status: Open
-- Symptom: The side view has no fuel flap. The plan said to draw it on the right side only.
-- Root cause: Skipped during Phase 1. The Serdang photo shows a rounded rectangle on the right rear quarter, above the rear arch and behind the rear door. The left side has none.
-- Fix: Draw the flap in a right-side-only group so the mirror toggle hides it.
-
-### BUG-008: The Gen2 model is a rough schematic
-- Date: 18/11/2026
-- Status: Open
-- Symptom: The side silhouette is a smoothed polyline. The glass, spoiler wedge, tail lamp, mirror, and door cut-outs are crude. The tailgate polygon crosses the rear quarter light, and the lamp moves with the tailgate. The tailgate lifts only 40 degrees. The top view is mostly inferred, and doors appear as thin strips.
-- Root cause: The model came from pixel measurements of one 2007 drawing and three photos, with hand-built paths.
-- Fix: Redraw with better curves and detail. See `argon_car_model_prompt.md`.
-
-### BUG-009: The six boards are slightly stale
-- Date: 18/11/2026
-- Status: Open
-- Symptom: The boards were captured before the panel countdown readout was added to `index.html` and before the last wording fixes in `guide.html`.
-- Fix: Capture the six boards again after the model work.
-
 ### BUG-010: `ownerVerified` is always true and the page wiring has no automated test
 - Date: 18/11/2026
 - Status: Open
@@ -51,14 +31,14 @@ Last update: 18/11/2026.
 ### BUG-012: Small leftovers
 - Date: 18/11/2026
 - Status: Open
-- Symptom: The old key `atumatik_modeb_rules` stays unread in browsers that used the door demo. Mode B invalid replies carry no `target` field. `assets/og-share.png` has a short stray ground-line fragment at the right. `.claude/launch.json` is untracked and `.gitignore` does not list it. The event log table scrolls inside its own box at 375 px.
+- Symptom: The old key `atumatik_modeb_rules` stays unread in browsers that used the door demo. Mode B invalid replies carry no `target` field on early error returns. `.claude/launch.json` is untracked and `.gitignore` does not list it. The event log table scrolls inside its own box at 375 px. The stray ground-line fragment in `assets/og-share.png` was fixed in `5395f70`.
 - Fix: Clean each item, or record the choice in `decisions.md`.
 
 ### BUG-014: Chime and alert limits on real devices
 - Date: 18/11/2026
 - Status: Open
 - Symptom: The chime repeat comes from a timer that Chrome slows in a background tab. The audio context unlocks only on the first click or key press, and the page does not resume it later. No real device has tested sound.
-- Fix: Resume the audio context when the alert starts, schedule the tone pairs with the audio clock, and test on a phone and on desktop Chrome.
+- Fix: Resume the audio context when the alert starts. Schedule tone pairs with the audio clock. Test on a phone and on desktop Chrome.
 
 ### BUG-015: Spec deviations and unverified guide content
 - Date: 18/11/2026
@@ -69,8 +49,14 @@ Last update: 18/11/2026.
 ### BUG-013: Checks that never ran
 - Date: 18/11/2026
 - Status: Open
-- Symptom: Real microphone voice commands, a stranger voice with an enrolled voiceprint, Mode B with a live Groq key, an audible chime on a real device, a real phone touch test, and Lighthouse on the live site after deployment did not run.
+- Symptom: Several live checks did not run. Real mic voice commands and a stranger voice test did not run. Mode B with a live Groq key, an audible device chime, real phone touch, and post-deploy live-site Lighthouse also did not run.
 - Fix: Run them by hand (see `handoff.md`).
+
+### BUG-017: Open cabin cut-out contrast and Model v2 follow-ups (New)
+- Date: 18/11/2026
+- Status: Open
+- Symptom: Lighthouse v13.6.0 did not re-run after Model v2 because no local Lighthouse binary exists here. `404.html` lacks the theme script and skip link, and footer dates differ (`15/11/2026` on `index.html` and `404.html` vs `18/11/2026` on `guide.html`). The open cabin contrast issue (`#3A3F45` vs `#121212` at `1.76:1`) was fixed in `61f2d51` by adding `--car-line` strokes (`5.40:1`) to `.door-cut` and `.car-aperture`.
+- Fix: Run Lighthouse on `index.html` and `guide.html` after Model v2, and ask Adam about the footer dates.
 
 ## Known Risks
 
@@ -130,3 +116,27 @@ Last update: 18/11/2026.
 - Reproduction: Enrol a voiceprint, reload `index.html`. Or capture two sentences and reload.
 - Root cause: Four gaps in `src/app.js` and `src/voiceprint.js`. Partial enrolment lived only in memory. The rows ignored a saved voiceprint. The consent tick was not saved. `transformers.js` reports "progress" events for cache hits, so the UI labelled a cache read as a download. Live check on 18/11/2026: the model files were already in the `transformers-cache` Cache API entry and a reload sent zero requests to `huggingface.co`.
 - Fix: Save partial enrolment (`atumatik_enrol_partial_v1`) and consent (`atumatik_pdpa_consent_v1`) in `localStorage`. Show a saved voiceprint as "Captured (saved)" and disable the record buttons. Label cache reads as "Loading ... from device cache". Load the model in the background only when it is already cached, a voiceprint exists, and consent is saved. Request persistent storage after a model load. Added `tests/voiceprint-storage.test.js` (8 tests, failing before the fix, `25/25` pass after).
+
+### BUG-007: Fuel flap is not drawn
+- Date: 18/11/2026
+- Status: Fixed
+- Symptom: The side view had no fuel flap on the right rear quarter panel.
+- Reproduction: View `#car-side` in `index.html` and toggle "Show left side".
+- Root cause: The flap was skipped during Phase 1.
+- Fix: Added `<g class="car-right-only">` in `index.html` (`61f2d51`) with the fuel flap and driver lock cylinder. Added `.is-mirrored .car-right-only { display: none; }` in `assets/styles.css`. Verified in Chrome (`inline` before mirror, `none` after mirror).
+
+### BUG-008: The Gen2 model was a rough schematic
+- Date: 18/11/2026
+- Status: Fixed
+- Symptom: The side view used a polyline, straight window polygons, a wedge spoiler, and a rotating tail lamp. Its 40-degree tailgate crossed the quarter glass, and top-down doors were thin strips.
+- Reproduction: Compare `#car-side` and `#car-top` with the Gen2 reference photos and 2007 blueprint.
+- Root cause: First-pass schematic paths were hand-approximated without cubic Beziers or separate fixed body trim.
+- Fix: Redrew `#car-side` and `#car-top` in `index.html` and `assets/styles.css` (`61f2d51`). Added cubic Bezier bodywork, curved glass with mirror sail, a rounded-D quarter window, and a fixed 3-lens tail lamp. Added a pylon spoiler, 48-degree roof-hinged tailgate, twin-projector headlamp, 5-split-spoke rims, and sculpted top-down doors. Verified visually against references and in Chrome (`49/49` unit tests pass, 0 console errors, 0 horizontal overflow, WCAG >= `3.27:1`).
+
+### BUG-009: The six boards and light-theme captures were stale
+- Date: 18/11/2026
+- Status: Fixed
+- Symptom: Boards predated Model v2 and the latest page text. Desktop boards were `1425 px` wide, and `index-light.png` and `guide-light.png` were captured in dark mode (`BUG-016`).
+- Reproduction: Inspect `design/boards/*.png` and compare `shasum -a 256` hashes.
+- Root cause: Scrollbar width shrunk captures and dark theme state persisted into light captures.
+- Fix: Re-captured all six boards in `5395f70` with hidden scrollbars and explicit `light` (`rgb(244, 243, 239)`) and `dark` (`rgb(16, 16, 16)`) themes. Verified `1440 px` desktop and `375 px` mobile widths. Also updated `assets/favicon.svg` and re-rendered `assets/og-share.png` without the stray ground-line fragment.

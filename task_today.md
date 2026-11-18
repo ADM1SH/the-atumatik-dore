@@ -4,14 +4,14 @@ Last update: 18/11/2026.
 
 ## Single Active Task
 
-Hand the branch `feat/proton-gen2` to Argon 4 (Gemini). Argon 4 does two things in order. First it lists every error in the repository (read-only) and waits for Adam's approval. Then it improves the Gen2 car model in both SVG views.
-The full prompt is in `argon_car_model_prompt.md` (gitignored, local only). The known errors are BUG-007 to BUG-015 in `bugs.md`.
+Adam reviews the Job 1 audit list and the Model v2 comparison screenshots on branch `feat/gen2-model-v2`.
+After visual sign-off, Adam decides which remaining open items (BUG-010 to BUG-017) to address before merging into `feat/proton-gen2` or `main`.
 
 ## Files Needed for This Task
 
 - `bugs.md`
-- `index.html` (both SVGs)
+- `decisions.md`
+- `index.html`
 - `assets/styles.css`
-- `design/tokens.css`
-- `src/app.js` (`renderCar`)
-- `decisions.md` (DEC-012)
+- `testing.md`
+- `handoff.md`

@@ -118,18 +118,18 @@ The `chrome-devtools-mcp` Lighthouse v13.6.0 runner outputs Accessibility, Best 
 | 19. Make email clickable | N/A | No real email address is included in this public repo. |
 | 20. Mobile optimize | Done | Captured 6 boards (`design/boards/`), checked `44x44` px targets, and verified light/dark contrast `>= 4.70:1`. |
 
-## 6. Car Demo Update (18/11/2026)
+## 6. Car Demo Update and Model v2 (18/11/2026)
 
-Lighthouse v13.6.0 on `localhost`, mobile and desktop, all four categories `100`. Before (live site, same day): `100` on both pages.
+Lighthouse v13.6.0 scored 100 in all four categories on `localhost` before Model v2 (`18/11/2026`). Lighthouse did not re-run after Model v2 because no local Lighthouse binary is installed.
 
-| Metric | `index.html` Before | `index.html` After | `guide.html` Before | `guide.html` After |
+| Metric | `index.html` Before | `index.html` Model v1 | `index.html` Model v2 | `guide.html` After |
 |---|---|---|---|---|
-| Accessibility / Best Practices / SEO / Agentic Browsing (mobile) | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| Same on desktop | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
-| Audits passed | 57 | 60 | 56 | 57 |
-| JS in `src/` | 53,631 B | 75,929 B | n/a | n/a |
-| CSS (`tokens.css` + `styles.css`) | 13,509 B | 15,965 B | n/a | n/a |
-| Image weight (`favicon.svg` + `og-share.png`) | 6,981 B | 36,454 B | n/a | n/a |
+| Accessibility / Best Practices / SEO / Agentic Browsing (mobile) | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | Not re-run (local binary missing) | 100 / 100 / 100 / 100 |
+| Same on desktop | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | Not re-run (local binary missing) | 100 / 100 / 100 / 100 |
+| Audits passed | 57 | 60 | Not re-run | 57 |
+| JS in `src/` (8 modules) | 53,631 B | 76,102 B | 76,102 B | n/a |
+| CSS (`tokens.css` + `styles.css`) | 13,509 B | 15,965 B | 16,485 B | n/a |
+| Image weight (`favicon.svg` + `og-share.png`) | 6,981 B | 36,454 B | 41,096 B | n/a |
 
 Protect checklist for the new features:
 
