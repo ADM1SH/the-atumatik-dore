@@ -1,17 +1,17 @@
 # Handoff
 
-Last update: 19/11/2026 (pushed `feat/gen2-model-v2` and `feat/proton-gen2` to `origin`).
+Last update: 19/11/2026 (merged `feat/gen2-model-v2` into `feat/proton-gen2` and `main`).
 
 ## 1. Goals
 
 - Replace the sliding door demo with a Proton Gen2 CPS (manual) car demo in a black body with bronze rims. Everything is a browser demo. No real hardware is controlled.
 - Deliver Job 1 (read-only repository audit) and Job 2 (Proton Gen2 CPS SVG model v2, refreshed assets, and refreshed boards) in full auto mode.
 - Keep Mode A, Mode B, the speaker lock, the PDPA 2010 notice, the strict CSP, and per-device persistence (BUG-006, DEC-010).
-- Work on branch `feat/gen2-model-v2` cut from `feat/proton-gen2`. Do not push to `main` and do not deploy to GitHub Pages.
+- Fast-forward merge `feat/gen2-model-v2` into `feat/proton-gen2` and `main` on Adam's approval, then push all three branches.
 
 ## 2. Current state
 
-- Branches `feat/proton-gen2` (`501d8ed`) and `feat/gen2-model-v2` (`61f2d51`, `5395f70`, `dc0f242`, plus this handoff update) are pushed to `origin` on 19/11/2026. `main` stays untouched at `1225c43`.
+- `feat/gen2-model-v2`, `feat/proton-gen2`, and `main` all point to the same tip on 19/11/2026 (`61f2d51`, `5395f70`, `dc0f242`, `60129a4`, plus this merge update). All three branches are pushed to `origin` (`https://adm1sh.github.io/the-atumatik-dore/`).
 - `node --test tests/` passes `49/49` (`0` failures).
 - Headless Chrome checks (`localhost:8768`) passed after Model v2. Checks confirmed zero console errors, zero horizontal overflow (outside `.table-wrap` at 375 px), and `44 x 44` px kick zones with at least 13 px gap. Checks also verified `0s` reduced-motion transitions, mirror-hidden fuel flap, all car rules, BUG-006 restore, and a real-time 60 s alert moving windows to `[50, 100, 50, 50]`.
 - Lighthouse v13.6.0 scored `100` in all four categories before Model v2 (`18/11/2026`). Lighthouse did not re-run after Model v2 because no local Lighthouse binary is installed here.
@@ -42,7 +42,7 @@ Last update: 19/11/2026 (pushed `feat/gen2-model-v2` and `feat/proton-gen2` to `
 
 ## 6. Next steps
 
-1. Adam inspects both Model v2 SVG views against the reference comparison screenshot (`gen2-model-v2-comparison.png` in the session artifact directory) and approves the look.
-2. Run Lighthouse v13.6.0 on `index.html` and `guide.html` (mobile and desktop) after Model v2.
-3. Adam decides whether to fix open items (`BUG-010` to `BUG-017`) before merging `feat/gen2-model-v2`.
+1. Adam tests the live GitHub Pages deployment (`https://adm1sh.github.io/the-atumatik-dore/`) and confirms the Model v2 car views.
+2. Run Lighthouse v13.6.0 on the live site (`index.html` and `guide.html`, mobile and desktop) after GitHub Pages builds.
+3. Adam decides whether to fix remaining open items (`BUG-010` to `BUG-017`) in a follow-up change.
 4. Hand tests for Adam: real mic voice commands in Mode A and Mode B, and a stranger voice against an enrolled voiceprint. Test Mode B with a live Groq key, audible chime on desktop and phone, phone kick touch, Commons licences, and live-site Lighthouse.
