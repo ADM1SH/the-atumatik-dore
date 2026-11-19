@@ -1,6 +1,6 @@
 # Handoff
 
-Last update: 18/11/2026 (Model v2 on branch `feat/gen2-model-v2`).
+Last update: 19/11/2026 (pushed `feat/gen2-model-v2` and `feat/proton-gen2` to `origin`).
 
 ## 1. Goals
 
@@ -11,7 +11,7 @@ Last update: 18/11/2026 (Model v2 on branch `feat/gen2-model-v2`).
 
 ## 2. Current state
 
-- Branch `feat/gen2-model-v2` sits ahead of `feat/proton-gen2` (`501d8ed`). Commits on `feat/gen2-model-v2` are `61f2d51` (Gen2 SVG model v2) and `5395f70` (favicon, OG card, and boards). `main` stays untouched at `1225c43`.
+- Branches `feat/proton-gen2` (`501d8ed`) and `feat/gen2-model-v2` (`61f2d51`, `5395f70`, `dc0f242`, plus this handoff update) are pushed to `origin` on 19/11/2026. `main` stays untouched at `1225c43`.
 - `node --test tests/` passes `49/49` (`0` failures).
 - Headless Chrome checks (`localhost:8768`) passed after Model v2. Checks confirmed zero console errors, zero horizontal overflow (outside `.table-wrap` at 375 px), and `44 x 44` px kick zones with at least 13 px gap. Checks also verified `0s` reduced-motion transitions, mirror-hidden fuel flap, all car rules, BUG-006 restore, and a real-time 60 s alert moving windows to `[50, 100, 50, 50]`.
 - Lighthouse v13.6.0 scored `100` in all four categories before Model v2 (`18/11/2026`). Lighthouse did not re-run after Model v2 because no local Lighthouse binary is installed here.
